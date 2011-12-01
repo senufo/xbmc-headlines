@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.rss_atom"
+       name="rss_atom"
+       version="0.0.1"
+       provider-name="Senufo">
+  <requires>
+    <import addon="xbmc.python" version="2.0"/>
+  </requires>
+  <extension point="xbmc.python.script"
+             library="headlines.py" />
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">View feed RSS/ATOM</summary>
+    <summary lang="fr">VOir les flux RSS/ATOMr</summary> 
+    <description lang="en">View feed RSS/ATOM</description>
+    <description lang="fr">
+            Voir les flux RSS et ATOM, basé sur multirss (https://github.com/cf2009/multirss)
+    </description>
+    <platform>all</platform>
+  </extension>
+</addon>
