@@ -85,11 +85,17 @@ for titre,link,description in headlines:
         print "Headline = %s " % unicode(titre).encode('utf-8','replace')
         description = description.replace('\n\n', '&#xxx;').replace('\n', ' ').\
                           replace('&#xxx;', '\n')
+        description = description.replace('<strong>', '**').replace('</strong>','**')
+        description = description.replace('<p>', '\n').replace('</p>', '\n')
         description = description.replace('<p>', '\n').replace('<br>', '\n')
         description = description.replace('<p>', '\n').replace('<br/>', '\n')
-        description = description + '\n \n \nLink: ' + link
+        description = description.replace('<em>', '*').replace('</em>', '*')
+        description = description.replace('<li>', '\n').replace('</li>', '\n')
+        description = description.replace('<ul>', '\n').replace('</ul>', '\n')
+        description = description.replace('<div>', '\n').replace('</div>', '\n')
+        #description = description + '\n \n \nLink: ' + link
         description = unicode(BeautifulStoneSoup(description, convertEntities=BeautifulStoneSoup.HTML_ENTITIES))
-        description = htmlenties2txt(description)
+        #description = htmlenties2txt(description)
 
         print "Description = %s " % unicode(description).encode('utf-8','replace')
     except Exception ,e:
