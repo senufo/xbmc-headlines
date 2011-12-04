@@ -147,11 +147,17 @@ class RSSWindow(xbmcgui.WindowXML):
             #print "doc Titre = %s " % doc.feed.title
             self.getControl( 1000 + i ).setLabel( doc.feed.title )
             print "TIME = %f " % time.time()
+
+  def ParseRSS(self,RssName):
+    NbNews = 0
     # parse the document
     #doc = feedparser.parse(url)
     doc = feedparser.parse('file://%s' % self.RssFeeds)
     #Récupère le tire du flux
     #print "doc Titre = %s " % doc.feed.title
+    Dialog = xbmcgui.DialogProgress()
+                              #Message(s)                       #Get mail
+    Dialog.create("Connexion à : ", "LinuxFr")
     img_name = ' '
     if doc.status < 400:
         for entry in doc['entries']:
@@ -265,7 +271,7 @@ class RSSWindow(xbmcgui.WindowXML):
         #print "onClick controId = %d " % controlId
         if (controlId in [SERVER1,SERVER2,SERVER3]):
             label = self.getControl( controlId ).getLabel()
-            self.checkEmail(label)
+            self.ParseRSS(label)
         elif (controlId == QUIT):
             self.close()
 
