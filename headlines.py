@@ -113,7 +113,6 @@ class RSSWindow(xbmcgui.WindowXML):
                               #Message(s)                       #Get mail
     Dialog.create("Connexion à : ", "LinuxFr")
     NbNews = 0
-    Dialog.update(0, 'Connexion à', 'Please wait...')
     
     #Sauve les flux RSS
     for setName in self.feedsList:
@@ -121,12 +120,12 @@ class RSSWindow(xbmcgui.WindowXML):
         for feed in self.feedsList[setName]['feedslist']:
             i += 1
             print "=>url = %s " % feed['url']
+            Dialog.update(0, 'Connexion a %s' % feed['url'], 'Please wait...')
             updateinterval = int(feed['updateinterval']) * 60
             #http://www.lequipe.fr/Xml/actu_rss.xml
             filename = feed['url']
             filename = re.sub('^http://.*/','Rss-',filename)
             self.RssFeeds = xbmc.translatePath('special://userdata/%s' % filename)
-            #if (diff > updateinterval):
             #teste si le fichier existe
             if (os.path.isfile(self.RssFeeds)):
                 #Si le flux date de plus que le updateinterval on le download de nx
@@ -140,12 +139,14 @@ class RSSWindow(xbmcgui.WindowXML):
                     urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
                     print "date = %f, epoc time = %f  " % (date_modif, time.time())
             else:
+                #Le fichier n'existe pas on le download
                 urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
             #Récupére le titre du FLUX
-            print 'file://%s' % self.RssFeeds
+            #print 'file://%s' % self.RssFeeds
             doc = feedparser.parse('file://%s' % self.RssFeeds)
             #print "doc Titre = %s " % doc.feed.title
             self.getControl( 1000 + i ).setLabel( doc.feed.title )
+            print "TIME = %f " % time.time()
     # parse the document
     #doc = feedparser.parse(url)
     doc = feedparser.parse('file://%s' % self.RssFeeds)
