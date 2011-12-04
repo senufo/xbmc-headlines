@@ -126,15 +126,21 @@ class RSSWindow(xbmcgui.WindowXML):
             filename = feed['url']
             filename = re.sub('^http://.*/','Rss-',filename)
             self.RssFeeds = xbmc.translatePath('special://userdata/%s' % filename)
-            date_modif = os.stat(self.RssFeeds).st_mtime
-            diff = time.time() - date_modif
-            #Si le flux date de plus que le updateinterval on le download de nx
-            print "diff = %f, date_modif = %f, updateinterval %d" % (diff,date_modif,updateinterval )
             #if (diff > updateinterval):
-            if True:
-                print "=>filename = %s, self.RssFeeds = %s, url = %s " % (filename,self.RssFeeds, feed['url'])
+            #teste si le fichier existe
+            if (os.path.isfile(self.RssFeeds)):
+                #Si le flux date de plus que le updateinterval on le download de nx
+                date_modif = os.stat(self.RssFeeds).st_mtime
+                diff = time.time() - date_modif
+                print "diff = %f, date_modif = %f, updateinterval %d" % (diff,date_modif,updateinterval )
+
+                #Si le flux date de plus que le updateinterval on le download de nx
+                if (diff > updateinterval):
+                    print "=>filename = %s, self.RssFeeds = %s, url = %s " % (filename,self.RssFeeds, feed['url'])
+                    urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
+                    print "date = %f, epoc time = %f  " % (date_modif, time.time())
+            else:
                 urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
-                print "date = %f, epoc time = %f  " % (date_modif, time.time())
             #Récupére le titre du FLUX
             print 'file://%s' % self.RssFeeds
             doc = feedparser.parse('file://%s' % self.RssFeeds)
