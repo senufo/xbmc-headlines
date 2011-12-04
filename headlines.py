@@ -5,6 +5,7 @@ import xbmcaddon
 
 #python modules
 import os, time, stat, re, copy
+from xml.dom.minidom import parse, Document, _write_data, Node, Element
 import htmlentitydefs
 from html2text import *
 
@@ -32,6 +33,7 @@ __resource__   = xbmc.translatePath( os.path.join( __cwd__, 'resources', 'lib' )
 sys.path.append (__resource__)
 
 url = 'http://linuxfr.org/news.atom'
+url = 'http://www.lequipe.fr/Xml/actu_rss.xml'
 headlines = []
 
 #get actioncodes from keymap.xml/ keys.h
@@ -69,19 +71,51 @@ FILE_ATT	= 1005
 class RSSWindow(xbmcgui.WindowXML):
    
   def __init__(self, *args, **kwargs):
-
-    #variable pour position dans le msg
-    self.position = 0
+    if xbmc:
+        self.RssFeedsPath = xbmc.translatePath('special://userdata/RssFeeds.xml')
+    else:
+        self.RssFeedsPath = r'C:\Documents and Settings\Xerox\Application Data\XBMC\userdata\RssFeeds.xml'
+    sane = True   #self.checkRssFeedPathSanity()
+    if sane:
+        try:
+            self.feedsTree = parse(self.RssFeedsPath)
+        except:
+            print "Erreur self.feedsTree"
+    if self.feedsTree:
+        #self.feedsList = self.getCurrentRssFeeds()
+        self.feedsList = dict()
+        sets = self.feedsTree.getElementsByTagName('set')
+        for s in sets:
+            setName = 'set'+s.attributes["id"].value
+            self.feedsList[setName] = {'feedslist':list(), 'attrs':dict()}
+            #get attrs
+            for attrib in s.attributes.keys():
+                self.feedsList[setName]['attrs'][attrib] = s.attributes[attrib].value
+            #get feedslist
+            feeds = s.getElementsByTagName('feed')
+            for feed in feeds:
+                self.feedsList[setName]['feedslist'].append({'url':feed.firstChild.toxml(), 'updateinterval':feed.attributes['updateinterval'].value})
+        for setName in self.feedsList:
+            val = setName[0]
+            print "%s = %s " % (setName,val)
+            print "url = %s " % self.feedsList[setName]
+            #for set in feedsList[setName]:
+            #    print "SET = %s" % set
+            for feed in self.feedsList[setName]['feedslist']:
+                    print "url = %s " % feed['url']
+        print "URL = %s " % self.feedsList['set1']
 
   def onInit( self ):
     print "Branch  EXPERIMENTAL"
-    progressDialog = xbmcgui.DialogProgress()
+    Dialog = xbmcgui.DialogProgress()
                               #Message(s)                       #Get mail
-    progressDialog.create("Feed", "LinuxFr")
-    up = 0
+    Dialog.create("Connexion à : ", "LinuxFr")
+    NbNews = 0
+    Dialog.update(0, 'Connexion à', 'Please wait...')
 
     # parse the document
     doc = feedparser.parse(url)
+    img_name = ' '
     if doc.status < 400:
         for entry in doc['entries']:
             try:
@@ -91,24 +125,35 @@ class RSSWindow(xbmcgui.WindowXML):
                 link  = unicode(entry.link)
                 #title = (entry.title)
                 #link  = (entry.link)
-
+                if entry.has_key('enclosures'):
+                    if entry.enclosures:
+                        print "Enclosure = %s " % entry.enclosures[0].href
+                        link_img = entry.enclosures[0].href
+                        img_name = self.download(link_img,'/tmp/img.jpg')
                 if entry.has_key('content') and len(entry['content']) >= 1:
                     description = unicode(entry['content'][0].value)
                     type = entry['content'][0].type
-                    print "COntent = %s " % entry['content'][0].type
+                    #print "Content = %s " % entry['content'][0].type
                 else:
                     description = unicode(entry['summary_detail'].value)
-                headlines.append((title, link, description, type))
-                up += 1    #Get mail                         Please wait
-                progressDialog.update(up, 'Get News', 'Please wait...')
-            
-            except AttributeError:
+                    type = 'text'
+                headlines.append((title, link, description, type, img_name))
+                NbNews += 1
+                img_name = ' '
+            except AttributeError, e:
+                print "AttributeError : %s" % str(e)
                 pass
     else:
         print ('Error %s, getting %r' % (doc.status, url))
-    self.getControl( NX_MAIL ).setLabel( '%d news' % up ) 
-    for titre,link,description,type in headlines:
+    self.getControl( NX_MAIL ).setLabel( '%d news' % NbNews ) 
+    Dialog.close()
+    progressDialog = xbmcgui.DialogProgress()
+                              #Message(s)                       #Get mail
+    progressDialog.create("Connexion à : ", "LinuxFr")
+    up = 1
+    for titre,link,description,type,img_name in headlines:
         #print type(titre)
+                   #Get mail                         Please wait
         try:    
             print "Headline = %s " % unicode(titre).encode('utf-8','replace')
             listitem = xbmcgui.ListItem( label=titre) 
@@ -116,13 +161,47 @@ class RSSWindow(xbmcgui.WindowXML):
             #listitem.setProperty( "date", date )   
             html = html2text(description)
             listitem.setProperty( "message", html )
+            listitem.setProperty( "img" , img_name )
             #listitem.setProperty( "att_file", att_file )
             self.getControl( 120 ).addItem( listitem )
+            print "Up = %d,  NbNews = %d" % (up,NbNews)
+            up2 = int((up*100)/NbNews)
+            print "UP = %d " % up
+            up += 1
+            progressDialog.update(up2, 'Get News', 'Please wait...')
 
-            print "Description = %s " % unicode(html).encode('utf-8','replace')
+
+
+            #print "Description = %s " % unicode(html).encode('utf-8','replace')
         except Exception ,e:
             print "Erreur : %s " % str(e)
-        progressDialog.close()       
+    progressDialog.close()       
+
+  def getCacheThumbName(url, multiimagepath):
+    thumb = xbmc.getCacheThumbName(url)
+   
+    if 'jpg' in url:
+        thumb = thumb.replace('.tbn', '.jpg')
+    elif 'png' in url:
+        thumb = thumb.replace('.tbn', '.png')
+    elif 'gif' in url:
+        thumb = thumb.replace('.tbn', '.gif')
+   
+    tpath = os.path.join(multiimagepath, thumb)
+    return tpath
+     
+  def checkDir(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
+ 
+  def download(self,src,dst):
+    tmpname = xbmc.translatePath('special://temp/%s' % xbmc.getCacheThumbName(src))
+    print "tmpname = %s " % tmpname 
+    if os.path.exists(tmpname):
+        os.remove(tmpname)
+    urllib.urlretrieve(src, filename = tmpname)
+    #os.rename(tmpname, dst)
+    return tmpname
 
   def onAction(self, action):
         #print "ID Action %d" % action.getId()

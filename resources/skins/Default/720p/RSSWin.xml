@@ -24,8 +24,8 @@
             <description>page header tab icon</description>
             <posx>20</posx>
             <posy>12</posy>
-            <width>200</width>
-            <height>82</height>
+            <width>100</width>
+            <height>100</height>
             <texture>icon.png</texture>
         </control>
              
@@ -45,7 +45,7 @@
       </control>
       
       <control type="label" id="101">
-        <description>textarea : Nx mail</description>
+        <description>textarea : Nx News</description>
         <posx>1060</posx>
         <posy>60</posy>
         <width>200</width>
@@ -54,7 +54,7 @@
         <textcolor>white</textcolor>
         <aligny>center</aligny>
         <align>right</align>
-        <label>(0) New e-mails</label>
+        <label>(0) New(s)</label>
       </control>
      
       <control type="label">
@@ -184,6 +184,15 @@
           <onright>120</onright>
        </control>
 
+       <control type="image" id="1005">
+            <description>image du flux rss</description>
+            <posx>20</posx>
+            <posy>400</posy>
+            <!-- <width>100</width>
+            <height>100</height> -->
+            <texture>$INFO[Container(120).ListItem.Property(img)]</texture>
+        </control>
+ 
        <!-- separation entre list et msgbody -->
        <control type="image">
         <posx>180</posx>
@@ -235,7 +244,7 @@
           <control type="label">
             <posx>10</posx> <!-- position de l'element non selectionne -->
             <posy>0</posy>
-            <width>315</width>
+            <width>815</width>
             <height>38</height>
             <font>font18</font>
             <aligny>center</aligny>
@@ -263,7 +272,7 @@
           <control type="image"> <!-- Image de item selectionne -->
             <posx>0</posx>
             <posy>0</posy>
-            <width>490</width>
+            <width>815</width>
             <height>38</height>
             <texture border="10">default-list-focus.png</texture>
             <visible>Control.HasFocus(120)</visible>
@@ -272,7 +281,7 @@
           <control type="label">
             <posx>10</posx>
             <posy>0</posy>
-            <width>480</width>
+            <width>880</width>
             <height>38</height>
             <font>font19</font>
             <aligny>center</aligny>
