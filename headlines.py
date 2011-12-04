@@ -4,7 +4,7 @@ import xbmc, xbmcgui
 import xbmcaddon
 
 #python modules
-import os, time, stat, re, copy
+import os, time, stat, re, copy, time
 from xml.dom.minidom import parse, Document, _write_data, Node, Element
 import htmlentitydefs
 from html2text import *
@@ -76,11 +76,13 @@ class RSSWindow(xbmcgui.WindowXML):
     else:
         self.RssFeedsPath = r'C:\Documents and Settings\Xerox\Application Data\XBMC\userdata\RssFeeds.xml'
     sane = True   #self.checkRssFeedPathSanity()
-    if sane:
-        try:
-            self.feedsTree = parse(self.RssFeedsPath)
-        except:
-            print "Erreur self.feedsTree"
+   
+  def onInit( self ):
+    print "Branch  EXPERIMENTAL"
+    try:
+        self.feedsTree = parse(self.RssFeedsPath)
+    except:
+        print "Erreur self.feedsTree"
     if self.feedsTree:
         #self.feedsList = self.getCurrentRssFeeds()
         self.feedsList = dict()
@@ -105,16 +107,44 @@ class RSSWindow(xbmcgui.WindowXML):
                     print "url = %s " % feed['url']
         print "URL = %s " % self.feedsList['set1']
 
-  def onInit( self ):
-    print "Branch  EXPERIMENTAL"
+
+
     Dialog = xbmcgui.DialogProgress()
                               #Message(s)                       #Get mail
     Dialog.create("Connexion à : ", "LinuxFr")
     NbNews = 0
     Dialog.update(0, 'Connexion à', 'Please wait...')
-
+    
+    #Sauve les flux RSS
+    for setName in self.feedsList:
+        i = 0
+        for feed in self.feedsList[setName]['feedslist']:
+            i += 1
+            print "=>url = %s " % feed['url']
+            updateinterval = int(feed['updateinterval']) * 60
+            #http://www.lequipe.fr/Xml/actu_rss.xml
+            filename = feed['url']
+            filename = re.sub('^http://.*/','Rss-',filename)
+            self.RssFeeds = xbmc.translatePath('special://userdata/%s' % filename)
+            date_modif = os.stat(self.RssFeeds).st_mtime
+            diff = time.time() - date_modif
+            #Si le flux date de plus que le updateinterval on le download de nx
+            print "diff = %f, date_modif = %f, updateinterval %d" % (diff,date_modif,updateinterval )
+            #if (diff > updateinterval):
+            if True:
+                print "=>filename = %s, self.RssFeeds = %s, url = %s " % (filename,self.RssFeeds, feed['url'])
+                urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
+                print "date = %f, epoc time = %f  " % (date_modif, time.time())
+            #Récupére le titre du FLUX
+            print 'file://%s' % self.RssFeeds
+            doc = feedparser.parse('file://%s' % self.RssFeeds)
+            #print "doc Titre = %s " % doc.feed.title
+            self.getControl( 1000 + i ).setLabel( doc.feed.title )
     # parse the document
-    doc = feedparser.parse(url)
+    #doc = feedparser.parse(url)
+    doc = feedparser.parse('file://%s' % self.RssFeeds)
+    #Récupère le tire du flux
+    #print "doc Titre = %s " % doc.feed.title
     img_name = ' '
     if doc.status < 400:
         for entry in doc['entries']:
