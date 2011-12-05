@@ -94,6 +94,7 @@ class RSSWindow(xbmcgui.WindowXML):
         self.feedsTree = parse(self.RssFeedsPath)
     except:
         print "Erreur self.feedsTree"
+    #Recupere la liste des flux dans RSSFeeds.xml
     if self.feedsTree:
         #self.feedsList = self.getCurrentRssFeeds()
         self.feedsList = dict()
@@ -159,7 +160,11 @@ class RSSWindow(xbmcgui.WindowXML):
             #print "doc Titre = %s " % doc.feed.title
             self.getControl( 1000 + i ).setLabel( doc.feed.title )
             self.RssFeedName.append((self.RssFeeds,doc.feed.title))
-            print "TIME FIN = %f " % time.time()
+    settings_file = open('%s/settings.txt' % __profile__, 'w')
+    for feedAddress,feedTitle in self.RssFeedName:
+        settings_file.write('%s\t%s' % (repr(feedAddress),repr(feedTitle)))
+    settings_file.close()
+    print "TIME FIN = %f " % time.time()
 
   def ParseRSS(self,RssName):
     self.getControl( FEEDS_LIST ).reset()
