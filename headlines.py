@@ -73,7 +73,16 @@ class RSSWindow(xbmcgui.WindowXML):
   def __init__(self, *args, **kwargs):
     self.RssFeedName = []
     if xbmc:
+        print "Resource = %s, %s , %s " % (__resource__,__cwd__,__profile__)
+        if (os.path.isdir(__profile__)):
+            #self.RssFeedsPath = xbmc.translatePath('special://userdata/RssFeeds.xml')
+            #self.RssFeedsPath = "%s/%s" % (__profile__,RssFeeds.xml)
+            print "tt"
+        else:
+            os.mkdir(__profile__)
+            #os.mkdir(path, mode=0777) 
         self.RssFeedsPath = xbmc.translatePath('special://userdata/RssFeeds.xml')
+
     else:
         self.RssFeedsPath = r'C:\Documents and Settings\Xerox\Application Data\XBMC\userdata\RssFeeds.xml'
     sane = True   #self.checkRssFeedPathSanity()
@@ -114,7 +123,7 @@ class RSSWindow(xbmcgui.WindowXML):
                               #Message(s)                       #Get mail
     Dialog.create("Connexion à : ", "LinuxFr")
     NbNews = 0
-    
+    print "TIME debut = %f " % time.time() 
     #Sauve les flux RSS
     for setName in self.feedsList:
         i = 0
@@ -135,20 +144,20 @@ class RSSWindow(xbmcgui.WindowXML):
                 print "diff = %f, date_modif = %f, updateinterval %d" % (diff,date_modif,updateinterval )
 
                 #Si le flux date de plus que le updateinterval on le download de nx
-                if (diff > updateinterval):
-                    print "=>filename = %s, self.RssFeeds = %s, url = %s " % (filename,self.RssFeeds, feed['url'])
-                    urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
-                    print "date = %f, epoc time = %f  " % (date_modif, time.time())
-            else:
+                #if (diff > updateinterval):
+                #    print "=>filename = %s, self.RssFeeds = %s, url = %s " % (filename,self.RssFeeds, feed['url'])
+                #    urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
+                #    print "date = %f, epoc time = %f  " % (date_modif, time.time())
+            #else:
                 #Le fichier n'existe pas on le download
-                urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
+                #urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
             #Récupére le titre du FLUX
             #print 'file://%s' % self.RssFeeds
             doc = feedparser.parse('file://%s' % self.RssFeeds)
             #print "doc Titre = %s " % doc.feed.title
             self.getControl( 1000 + i ).setLabel( doc.feed.title )
             self.RssFeedName.append((self.RssFeeds,doc.feed.title))
-            print "TIME = %f " % time.time()
+            print "TIME FIN = %f " % time.time()
 
   def ParseRSS(self,RssName):
     self.getControl( FEEDS_LIST ).reset()
