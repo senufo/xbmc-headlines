@@ -57,7 +57,7 @@ ACTION_FASTFORWARD     =   77
 STATUS_LABEL   	= 100
 NX_MAIL       	= 101
 MSG_BODY	= 102
-EMAIL_LIST     	= 120
+FEEDS_LIST     	= 120
 SCROLL_BAR	= 121
 MSG_BODY	= 102
 SERVER1		= 1001
@@ -71,6 +71,7 @@ FILE_ATT	= 1005
 class RSSWindow(xbmcgui.WindowXML):
    
   def __init__(self, *args, **kwargs):
+    self.RssFeedName = []
     if xbmc:
         self.RssFeedsPath = xbmc.translatePath('special://userdata/RssFeeds.xml')
     else:
@@ -146,9 +147,20 @@ class RSSWindow(xbmcgui.WindowXML):
             doc = feedparser.parse('file://%s' % self.RssFeeds)
             #print "doc Titre = %s " % doc.feed.title
             self.getControl( 1000 + i ).setLabel( doc.feed.title )
+            self.RssFeedName.append((self.RssFeeds,doc.feed.title))
             print "TIME = %f " % time.time()
 
   def ParseRSS(self,RssName):
+    self.getControl( FEEDS_LIST ).reset()
+    #Recupere l'adresse du flux dans self.RssFeedName
+    for feedAddress,feedTitle in self.RssFeedName:
+        print 'feedAddress = %s ,feedTitle = %s' % \
+        (repr(feedAddress),repr(feedTitle))
+        if RssName == feedTitle:
+            print "==> Clique sur %s " % repr(feedAddress)
+            print "==> self.RssFeeds %s " % self.RssFeeds
+            self.RssFeeds = feedAddress
+            print "==> self.RssFeeds2 %s " % self.RssFeeds
     NbNews = 0
     # parse the document
     #doc = feedparser.parse(url)
@@ -157,7 +169,7 @@ class RSSWindow(xbmcgui.WindowXML):
     #print "doc Titre = %s " % doc.feed.title
     Dialog = xbmcgui.DialogProgress()
                               #Message(s)                       #Get mail
-    Dialog.create("Connexion à : ", "LinuxFr")
+    Dialog.create("Connexion à : ", self.RssFeeds)
     img_name = ' '
     if doc.status < 400:
         for entry in doc['entries']:
@@ -192,7 +204,7 @@ class RSSWindow(xbmcgui.WindowXML):
     Dialog.close()
     progressDialog = xbmcgui.DialogProgress()
                               #Message(s)                       #Get mail
-    progressDialog.create("Connexion à : ", "LinuxFr")
+    progressDialog.create("Connexion à : ", self.RssFeeds)
     up = 1
     for titre,link,description,type,img_name in headlines:
         #print type(titre)
