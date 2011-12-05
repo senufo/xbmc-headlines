@@ -74,6 +74,7 @@ class RSSWindow(xbmcgui.WindowXML):
     self.RssFeedName = []
     if xbmc:
         print "Resource = %s, %s , %s " % (__resource__,__cwd__,__profile__)
+        #Crée le répertoire user_data/script.rss_atom si il n'existe pas
         if (os.path.isdir(__profile__)):
             #self.RssFeedsPath = xbmc.translatePath('special://userdata/RssFeeds.xml')
             #self.RssFeedsPath = "%s/%s" % (__profile__,RssFeeds.xml)
@@ -135,7 +136,8 @@ class RSSWindow(xbmcgui.WindowXML):
             #http://www.lequipe.fr/Xml/actu_rss.xml
             filename = feed['url']
             filename = re.sub('^http://.*/','Rss-',filename)
-            self.RssFeeds = xbmc.translatePath('special://userdata/%s' % filename)
+            #self.RssFeeds = xbmc.translatePath('special://userdata/%s' % filename)
+            self.RssFeeds = '%s/%s' % (__profile__,filename)
             #teste si le fichier existe
             if (os.path.isfile(self.RssFeeds)):
                 #Si le flux date de plus que le updateinterval on le download de nx
@@ -144,15 +146,15 @@ class RSSWindow(xbmcgui.WindowXML):
                 print "diff = %f, date_modif = %f, updateinterval %d" % (diff,date_modif,updateinterval )
 
                 #Si le flux date de plus que le updateinterval on le download de nx
-                #if (diff > updateinterval):
-                #    print "=>filename = %s, self.RssFeeds = %s, url = %s " % (filename,self.RssFeeds, feed['url'])
-                #    urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
-                #    print "date = %f, epoc time = %f  " % (date_modif, time.time())
-            #else:
+                if (diff > updateinterval):
+                    print "=>filename = %s, self.RssFeeds = %s, url = %s " % (filename,self.RssFeeds, feed['url'])
+                    urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
+                    print "date = %f, epoc time = %f  " % (date_modif, time.time())
+            else:
                 #Le fichier n'existe pas on le download
-                #urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
+                urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
             #Récupére le titre du FLUX
-            #print 'file://%s' % self.RssFeeds
+            print 'file://%s' % self.RssFeeds
             doc = feedparser.parse('file://%s' % self.RssFeeds)
             #print "doc Titre = %s " % doc.feed.title
             self.getControl( 1000 + i ).setLabel( doc.feed.title )
