@@ -187,6 +187,8 @@ class RSSWindow(xbmcgui.WindowXML):
                               #Message(s)                       #Get mail
     Dialog.create("Connexion à : ", self.RssFeeds)
     img_name = ' '
+    #Vide les headlines lors d'un nouveau appel
+    headlines = []
     if doc.status < 400:
         for entry in doc['entries']:
             try:
