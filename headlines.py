@@ -6,6 +6,7 @@ import xbmcaddon
 #python modules
 import os, time, stat, re, copy, time
 from xml.dom.minidom import parse, Document, _write_data, Node, Element
+import pickle
 import htmlentitydefs
 from html2text import *
 
@@ -156,17 +157,43 @@ class RSSWindow(xbmcgui.WindowXML):
                 urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
             #Récupére le titre du FLUX
             print 'file://%s' % self.RssFeeds
-            doc = feedparser.parse('file://%s' % self.RssFeeds)
+            if (os.path.isfile('%s-pickle' % self.RssFeeds)):
+                pkl_file = open(('%s-pickle' % self.RssFeeds), 'rb')
+                doc = pickle.load(pkl_file)
+                pkl_file.close()
+            #else:
+            #    doc = feedparser.parse('file://%s' % self.RssFeeds)
+                #Sauve le doc parse directement
+            #    output = open(('%s-pickle' % self.RssFeeds), 'wb')
+                # Pickle dictionary using protocol 0.
+            #    pickle.dump(doc, output)
+            #    output.close()
             #print "doc Titre = %s " % doc.feed.title
             self.getControl( 1000 + i ).setLabel( doc.feed.title )
             self.RssFeedName.append((self.RssFeeds,doc.feed.title))
-    settings_file = open('%s/settings.txt' % __profile__, 'w')
-    for feedAddress,feedTitle in self.RssFeedName:
-        settings_file.write('%s\t%s' % (repr(feedAddress),repr(feedTitle)))
-    settings_file.close()
+    #teste si le fichier existe
+    if (os.path.isfile('%s/settings.txt' % __profile__)):
+        settings_file = open('%s/settings.txt' % __profile__, 'r')
+        FeedName = settings_file.read()
+        settings_file.close()
+        print "FEEDNAME = %s " % FeedName
+        lines = FeedName.split('\n')
+        for line in lines:
+            print "LINE = %s " % line
+            #feedAddress, feedTitle = line.split('\t',1)
+            #print "feedAddressi %s, feedTitle %s" % (feedAddress, feedTitle)
+    else:
+        settings_file = open('%s/settings.txt' % __profile__, 'w')
+        for feedAddress,feedTitle in self.RssFeedName:
+            settings_file.write('%s\t%s\n' % (repr(feedAddress),repr(feedTitle)))
+        settings_file.close()
     print "TIME FIN = %f " % time.time()
 
   def ParseRSS(self,RssName):
+    Dialog = xbmcgui.DialogProgress()
+    Dialog.create("Connexion à : ", RssName)
+    Dialog.update(0, 'Get News', 'Please wait... ParseRSS')
+
     self.getControl( FEEDS_LIST ).reset()
     #Recupere l'adresse du flux dans self.RssFeedName
     for feedAddress,feedTitle in self.RssFeedName:
@@ -180,12 +207,16 @@ class RSSWindow(xbmcgui.WindowXML):
     NbNews = 0
     # parse the document
     #doc = feedparser.parse(url)
-    doc = feedparser.parse('file://%s' % self.RssFeeds)
+    if (os.path.isfile('%s-pickle' % self.RssFeeds)):
+        pkl_file = open(('%s-pickle' % self.RssFeeds), 'rb')
+        doc = pickle.load(pkl_file)
+        pkl_file.close()
+    else:
+        doc = feedparser.parse('file://%s' % self.RssFeeds)
     #Récupère le tire du flux
     #print "doc Titre = %s " % doc.feed.title
-    Dialog = xbmcgui.DialogProgress()
-                              #Message(s)                       #Get mail
-    Dialog.create("Connexion à : ", self.RssFeeds)
+    #Dialog = xbmcgui.DialogProgress()
+    #Dialog.create("Connexion à : ", self.RssFeeds)
     img_name = ' '
     #Vide les headlines lors d'un nouveau appel
     headlines = []
@@ -219,10 +250,10 @@ class RSSWindow(xbmcgui.WindowXML):
     else:
         print ('Error %s, getting %r' % (doc.status, url))
     self.getControl( NX_MAIL ).setLabel( '%d news' % NbNews ) 
-    Dialog.close()
-    progressDialog = xbmcgui.DialogProgress()
+    #Dialog.close()
+    #progressDialog = xbmcgui.DialogProgress()
                               #Message(s)                       #Get mail
-    progressDialog.create("Connexion à : ", self.RssFeeds)
+    #progressDialog.create("Connexion à : ", self.RssFeeds)
     up = 1
     for titre,link,description,type,img_name in headlines:
         #print type(titre)
@@ -241,14 +272,14 @@ class RSSWindow(xbmcgui.WindowXML):
             up2 = int((up*100)/NbNews)
             print "UP = %d " % up
             up += 1
-            progressDialog.update(up2, 'Get News', 'Please wait...')
+            Dialog.update(up2, 'Get News', 'Please wait...')
 
 
 
             #print "Description = %s " % unicode(html).encode('utf-8','replace')
         except Exception ,e:
             print "Erreur : %s " % str(e)
-    progressDialog.close()       
+    Dialog.close()       
 
   def getCacheThumbName(url, multiimagepath):
     thumb = xbmc.getCacheThumbName(url)
