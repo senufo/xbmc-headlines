@@ -179,7 +179,7 @@
           <textcolor>FFFFFFFF</textcolor>
           <disabledcolor>80FFFFFF</disabledcolor>
           <onup>1003</onup>
-          <ondown>1001</ondown>
+          <ondown>1200</ondown>
           <onleft>120</onleft>
           <onright>120</onright>
        </control>
@@ -325,6 +325,88 @@
           <visible>Control.IsVisible(120)</visible>
         </control>
       </control>
+      <!-- Liste des serveurs de news -->
+      <control type="list" id="1200">
+        <description>Liste des serveurs de news</description>
+        <posx>20</posx>
+        <posy>400</posy>
+        <width>256</width>
+	<height>400</height>
+	<onleft>1001</onleft>  <!-- définiton du controle -->
+        <onright>1004</onright> -->
+	<!-- <onup>1001</onup>
+	<ondown>1003</ondown> -->
+        <viewtype label="535">list</viewtype>
+        <pagecontrol>121</pagecontrol>
+        <scrolltime>200</scrolltime>
+	<itemlayout height="38"> <!-- Position des items dans la liste -->
+          <control type="image">
+            <posx>0</posx>
+            <posy>36</posy>
+            <width>260</width>
+            <height>2</height>
+            <texture border="10">default-list-nofocus.png</texture>
+          </control>
+          
+          <control type="label">
+            <posx>10</posx> <!-- position de l'element non selectionne -->
+            <posy>0</posy>
+            <width>260</width>
+            <height>38</height>
+            <font>font18</font>
+            <aligny>center</aligny>
+            <textcolor>white</textcolor>
+            <selectedcolor>green</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Label</info>
+          </control>
+          
+        </itemlayout>
+        <focusedlayout height="38">
+          <control type="image"> <!-- Image de item selectionne -->
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>815</width>
+            <height>38</height>
+            <texture border="10">default-list-focus.png</texture>
+            <visible>Control.HasFocus(1200)</visible>
+          </control>
+          
+          <control type="label">
+            <posx>10</posx>
+            <posy>0</posy>
+            <width>880</width>
+            <height>38</height>
+            <font>font19</font>
+            <aligny>center</aligny>
+            <textcolor>white</textcolor>
+            <selectedcolor>green</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Label</info>
+          </control>
+        </focusedlayout>
+      </control>
+
+<!--      <control type="group">
+        <posx>1155</posx>
+        <posy>126</posy>
+        <control type="scrollbar" id="121">
+          <description>scroll bar indicator for lists</description>
+          <posx>0</posx>
+          <posy>0</posy>
+          <width>12</width>
+          <height>100</height>
+          <texturesliderbackground border="6">default-scroll_back.png</texturesliderbackground>
+          <texturesliderbar border="6">default-scroll_mid.png</texturesliderbar>
+          <texturesliderbarfocus border="6">default-scroll_mid.png</texturesliderbarfocus>
+          <textureslidernib>-</textureslidernib>
+          <textureslidernibfocus>-</textureslidernibfocus>
+          <orientation>vertical</orientation>
+          <showonepage>false</showonepage>
+          <visible>Control.IsVisible(120)</visible>
+        </control>
+      </control> -->
+
 
     </control>
   </controls>

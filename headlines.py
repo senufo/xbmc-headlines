@@ -72,6 +72,7 @@ FILE_ATT	= 1005
 class RSSWindow(xbmcgui.WindowXML):
    
   def __init__(self, *args, **kwargs):
+    self.position = 0
     self.RssFeedName = []
     if xbmc:
         print "Resource = %s, %s , %s " % (__resource__,__cwd__,__profile__)
@@ -161,16 +162,21 @@ class RSSWindow(xbmcgui.WindowXML):
                 pkl_file = open(('%s-pickle' % self.RssFeeds), 'rb')
                 doc = pickle.load(pkl_file)
                 pkl_file.close()
-            #else:
-            #    doc = feedparser.parse('file://%s' % self.RssFeeds)
+            else:
+                doc = feedparser.parse('file://%s' % self.RssFeeds)
                 #Sauve le doc parse directement
-            #    output = open(('%s-pickle' % self.RssFeeds), 'wb')
+                output = open(('%s-pickle' % self.RssFeeds), 'wb')
                 # Pickle dictionary using protocol 0.
-            #    pickle.dump(doc, output)
-            #    output.close()
+                pickle.dump(doc, output)
+                output.close()
             #print "doc Titre = %s " % doc.feed.title
             self.getControl( 1000 + i ).setLabel( doc.feed.title )
             self.RssFeedName.append((self.RssFeeds,doc.feed.title))
+            listitem = xbmcgui.ListItem( label=doc.feed.title) 
+            #listitem.setProperty( "att_file", att_file )
+            listitem.setProperty("serveur", self.RssFeeds)
+            self.getControl( 1200 ).addItem( listitem )
+
     #teste si le fichier existe
     if (os.path.isfile('%s/settings.txt' % __profile__)):
         settings_file = open('%s/settings.txt' % __profile__, 'r')
@@ -196,14 +202,16 @@ class RSSWindow(xbmcgui.WindowXML):
 
     self.getControl( FEEDS_LIST ).reset()
     #Recupere l'adresse du flux dans self.RssFeedName
-    for feedAddress,feedTitle in self.RssFeedName:
-        print 'feedAddress = %s ,feedTitle = %s' % \
-        (repr(feedAddress),repr(feedTitle))
-        if RssName == feedTitle:
-            print "==> Clique sur %s " % repr(feedAddress)
-            print "==> self.RssFeeds %s " % self.RssFeeds
-            self.RssFeeds = feedAddress
-            print "==> self.RssFeeds2 %s " % self.RssFeeds
+    print "==>self.RssFeeds = %s" % (RssName)
+    #for feedAddress,feedTitle in self.RssFeedName:
+    #    print 'feedAddress = %s ,feedTitle = %s' % \
+    #    (repr(feedAddress),repr(feedTitle))
+    #    if RssName == feedTitle:
+    #        print "==> Clique sur %s " % repr(feedAddress)
+    #        print "==> self.RssFeeds %s " % self.RssFeeds
+    #        self.RssFeeds = feedAddress
+    #        print "==> self.RssFeeds2 %s " % self.RssFeeds
+    self.RssFeeds = RssName
     NbNews = 0
     # parse the document
     #doc = feedparser.parse(url)
@@ -261,8 +269,6 @@ class RSSWindow(xbmcgui.WindowXML):
         try:    
             print "Headline = %s " % unicode(titre).encode('utf-8','replace')
             listitem = xbmcgui.ListItem( label=titre) 
-            #listitem.setProperty( "realname", realname )
-            #listitem.setProperty( "date", date )   
             html = html2text(description)
             listitem.setProperty( "message", html )
             listitem.setProperty( "img" , img_name )
@@ -329,9 +335,16 @@ class RSSWindow(xbmcgui.WindowXML):
             print "Position R = %d " % self.position
 																       
   def onClick( self, controlId ):
-        #print "onClick controId = %d " % controlId
+        print "onClick controId = %d " % controlId
+        if (controlId == 1200):
+            label = self.getControl( controlId ).getSelectedItem().getLabel()
+            label = self.getControl( controlId
+                                   ).getSelectedItem().getProperty('serveur')
+            print "LABEL LIST = %s" % (repr(label))
+            self.ParseRSS(label)
         if (controlId in [SERVER1,SERVER2,SERVER3]):
             label = self.getControl( controlId ).getLabel()
+            print "LABEL BUTTON = %s " % repr(label)
             self.ParseRSS(label)
         elif (controlId == QUIT):
             self.close()
