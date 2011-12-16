@@ -170,7 +170,7 @@ class RSSWindow(xbmcgui.WindowXML):
                 pickle.dump(doc, output)
                 output.close()
             #print "doc Titre = %s " % doc.feed.title
-            self.getControl( 1000 + i ).setLabel( doc.feed.title )
+            #self.getControl( 1000 + i ).setLabel( doc.feed.title )
             self.RssFeedName.append((self.RssFeeds,doc.feed.title))
             listitem = xbmcgui.ListItem( label=doc.feed.title) 
             #listitem.setProperty( "att_file", att_file )
@@ -193,9 +193,15 @@ class RSSWindow(xbmcgui.WindowXML):
         for feedAddress,feedTitle in self.RssFeedName:
             settings_file.write('%s\t%s\n' % (repr(feedAddress),repr(feedTitle)))
         settings_file.close()
+#    self.setFocus( self.getControl( 1200 ))
     print "TIME FIN = %f " % time.time()
+#    try:
+#        self.getFocus()
+#    except:)
+#        self.setFocus( self.getControl( 1004 ))
 
   def ParseRSS(self,RssName):
+    print "RssName = %s " % RssName
     Dialog = xbmcgui.DialogProgress()
     Dialog.create("Connexion à : ", RssName)
     Dialog.update(0, 'Get News', 'Please wait... ParseRSS')
@@ -342,10 +348,10 @@ class RSSWindow(xbmcgui.WindowXML):
                                    ).getSelectedItem().getProperty('serveur')
             print "LABEL LIST = %s" % (repr(label))
             self.ParseRSS(label)
-        if (controlId in [SERVER1,SERVER2,SERVER3]):
-            label = self.getControl( controlId ).getLabel()
-            print "LABEL BUTTON = %s " % repr(label)
-            self.ParseRSS(label)
+        #if (controlId in [SERVER1,SERVER2,SERVER3]):
+        #    label = self.getControl( controlId ).getLabel()
+        #    print "LABEL BUTTON = %s " % repr(label)
+        #    self.ParseRSS(label)
         elif (controlId == QUIT):
             self.close()
 

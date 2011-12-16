@@ -106,7 +106,7 @@
         <texture>GMseparator.png</texture>
       </control>      
       <!--- Boutons Serveurs MAIL -->
-      <control type="button" id="1001">
+<!--      <control type="button" id="1001">
           <description>Server button control</description>
           <posx>20</posx>
           <posy>126</posy>
@@ -162,29 +162,8 @@
           <ondown>1001</ondown>
           <onleft>1004</onleft>
           <onright>120</onright>
-       </control>
-       <!-- Bouton quitter -->
-       <control type="button" id="1004">
-          <description>Server button control</description>
-          <posx>20</posx>
-          <posy>256</posy>
-          <width>135</width>
-          <height>30</height>
-          <visible>true</visible>
-          <colordiffuse>FFFFFFFF</colordiffuse>
-          <texturefocus>default-list-focus.png</texturefocus>
-          <texturenofocus>default-list-nofocus.png</texturenofocus>
-          <label>Quitter</label>
-          <font>font14</font>
-          <textcolor>FFFFFFFF</textcolor>
-          <disabledcolor>80FFFFFF</disabledcolor>
-          <onup>1003</onup>
-          <ondown>1200</ondown>
-          <onleft>120</onleft>
-          <onright>120</onright>
-       </control>
-
-       <control type="image" id="1005">
+       </control> -->
+      <control type="image" id="1005">
             <description>image du flux rss</description>
             <posx>20</posx>
             <posy>400</posy>
@@ -225,7 +204,7 @@
         <posy>126</posy>
         <width>1040</width>
 	<height>120</height>
-	<onleft>1001</onleft>  <!-- définiton du controle -->
+	<onleft>1200</onleft>  <!-- définiton du controle -->
         <onright>1004</onright>
 	<!-- <onup>1001</onup>
 	<ondown>1003</ondown> -->
@@ -329,11 +308,11 @@
       <control type="list" id="1200">
         <description>Liste des serveurs de news</description>
         <posx>20</posx>
-        <posy>400</posy>
+        <posy>120</posy>
         <width>256</width>
-	<height>400</height>
-	<onleft>1001</onleft>  <!-- définiton du controle -->
-        <onright>1004</onright> -->
+	<height>300</height>
+	<onleft>1004</onleft>  <!-- définiton du controle -->
+        <onright>120</onright> -->
 	<!-- <onup>1001</onup>
 	<ondown>1003</ondown> -->
         <viewtype label="535">list</viewtype>
@@ -343,7 +322,7 @@
           <control type="image">
             <posx>0</posx>
             <posy>36</posy>
-            <width>260</width>
+            <width>135</width>
             <height>2</height>
             <texture border="10">default-list-nofocus.png</texture>
           </control>
@@ -351,7 +330,7 @@
           <control type="label">
             <posx>10</posx> <!-- position de l'element non selectionne -->
             <posy>0</posy>
-            <width>260</width>
+            <width>135</width>
             <height>38</height>
             <font>font18</font>
             <aligny>center</aligny>
@@ -366,7 +345,7 @@
           <control type="image"> <!-- Image de item selectionne -->
             <posx>0</posx>
             <posy>0</posy>
-            <width>815</width>
+            <width>135</width>
             <height>38</height>
             <texture border="10">default-list-focus.png</texture>
             <visible>Control.HasFocus(1200)</visible>
@@ -375,7 +354,7 @@
           <control type="label">
             <posx>10</posx>
             <posy>0</posy>
-            <width>880</width>
+            <width>135</width>
             <height>38</height>
             <font>font19</font>
             <aligny>center</aligny>
@@ -406,7 +385,28 @@
           <visible>Control.IsVisible(120)</visible>
         </control>
       </control> -->
+       <!-- Bouton quitter -->
+       <control type="button" id="1004">
+          <description>Server button control</description>
+          <posx>20</posx>
+          <posy>625</posy>
+          <width>135</width>
+          <height>30</height>
+          <visible>true</visible>
+          <colordiffuse>FFFFFFFF</colordiffuse>
+          <texturefocus>default-list-focus.png</texturefocus>
+          <texturenofocus>default-list-nofocus.png</texturenofocus>
+          <label>Quitter</label>
+          <font>font14</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <disabledcolor>80FFFFFF</disabledcolor>
+          <onup>1200</onup>
+          <ondown>1200</ondown>
+          <onleft>120</onleft>
+          <onright>120</onright>
+       </control>
 
+ 
 
     </control>
   </controls>
