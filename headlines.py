@@ -152,6 +152,7 @@ class RSSWindow(xbmcgui.WindowXML):
                 if (diff > updateinterval):
                     print "=>filename = %s, self.RssFeeds = %s, url = %s " % (filename,self.RssFeeds, feed['url'])
                     urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
+                    os.remove('%s-pickle' % self.RssFeeds)
                     print "date = %f, epoc time = %f  " % (date_modif, time.time())
             else:
                 #Le fichier n'existe pas on le download
@@ -198,7 +199,7 @@ class RSSWindow(xbmcgui.WindowXML):
 #    try:
 #        self.getFocus()
 #    except:)
-#        self.setFocus( self.getControl( 1004 ))
+#    self.setFocus( self.getControl( 1004 ))
 
   def ParseRSS(self,RssName):
     print "RssName = %s " % RssName

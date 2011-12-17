@@ -1,5 +1,5 @@
 <window>
-  <defaultcontrol>1001</defaultcontrol>
+  <defaultcontrol>1004</defaultcontrol>
   <coordinates>
     <system>1</system>
     <posx>0</posx>
@@ -8,7 +8,7 @@
   <animation effect="fade" time="250">WindowOpen</animation>
   <animation effect="fade" time="250">WindowClose</animation>
   <controls>
-    <control type="group">
+  <control type="group">
       <posx>0</posx>
       <posy>0</posy>
       <control type="image">
@@ -105,64 +105,27 @@
         <height>2</height>
         <texture>GMseparator.png</texture>
       </control>      
-      <!--- Boutons Serveurs MAIL -->
-<!--      <control type="button" id="1001">
+         <!-- Bouton quitter -->
+       <control type="button" id="1004">
           <description>Server button control</description>
           <posx>20</posx>
-          <posy>126</posy>
+          <posy>625</posy>
           <width>135</width>
           <height>30</height>
           <visible>true</visible>
           <colordiffuse>FFFFFFFF</colordiffuse>
           <texturefocus>default-list-focus.png</texturefocus>
           <texturenofocus>default-list-nofocus.png</texturenofocus>
-          <label></label>
+          <label>Quitter</label>
           <font>font14</font>
           <textcolor>FFFFFFFF</textcolor>
           <disabledcolor>80FFFFFF</disabledcolor>
-          <onup>1003</onup>
-          <ondown>1002</ondown>
-          <onleft>1004</onleft>
+          <onup>1200</onup>
+          <ondown>1200</ondown>
+          <onleft>120</onleft>
           <onright>120</onright>
-      </control>
-      <control type="button" id="1002">
-          <description>Server button control</description>
-          <posx>20</posx>
-          <posy>166</posy>
-          <width>135</width>
-          <height>30</height>
-          <visible>true</visible>
-          <colordiffuse>FFFFFFFF</colordiffuse>
-          <texturefocus>default-list-focus.png</texturefocus>
-          <texturenofocus>default-list-nofocus.png</texturenofocus>
-          <label></label>
-          <font>font14</font>
-          <textcolor>FFFFFFFF</textcolor>
-          <disabledcolor>80FFFFFF</disabledcolor>
-          <onup>1001</onup>
-          <ondown>1003</ondown>
-          <onleft>1004</onleft>
-          <onright>120</onright>
-      </control>
-      <control type="button" id="1003">
-          <description>Server button control</description>
-          <posx>20</posx>
-          <posy>206</posy>
-          <width>135</width>
-          <height>30</height>
-          <visible>true</visible>
-          <colordiffuse>FFFFFFFF</colordiffuse>
-          <texturefocus>default-list-focus.png</texturefocus>
-          <texturenofocus>default-list-nofocus.png</texturenofocus>
-          <label></label>
-          <font>font14</font>
-          <textcolor>FFFFFFFF</textcolor>
-          <disabledcolor>80FFFFFF</disabledcolor>
-          <onup>1002</onup>
-          <ondown>1001</ondown>
-          <onleft>1004</onleft>
-          <onright>120</onright>
-       </control> -->
+       </control>
+
       <control type="image" id="1005">
             <description>image du flux rss</description>
             <posx>20</posx>
@@ -345,7 +308,7 @@
           <control type="image"> <!-- Image de item selectionne -->
             <posx>0</posx>
             <posy>0</posy>
-            <width>135</width>
+            <width>160</width>
             <height>38</height>
             <texture border="10">default-list-focus.png</texture>
             <visible>Control.HasFocus(1200)</visible>
@@ -385,27 +348,6 @@
           <visible>Control.IsVisible(120)</visible>
         </control>
       </control> -->
-       <!-- Bouton quitter -->
-       <control type="button" id="1004">
-          <description>Server button control</description>
-          <posx>20</posx>
-          <posy>625</posy>
-          <width>135</width>
-          <height>30</height>
-          <visible>true</visible>
-          <colordiffuse>FFFFFFFF</colordiffuse>
-          <texturefocus>default-list-focus.png</texturefocus>
-          <texturenofocus>default-list-nofocus.png</texturenofocus>
-          <label>Quitter</label>
-          <font>font14</font>
-          <textcolor>FFFFFFFF</textcolor>
-          <disabledcolor>80FFFFFF</disabledcolor>
-          <onup>1200</onup>
-          <ondown>1200</ondown>
-          <onleft>120</onleft>
-          <onright>120</onright>
-       </control>
-
  
 
     </control>
