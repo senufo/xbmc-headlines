@@ -101,8 +101,10 @@ class RSSWindow(xbmcgui.WindowXML):
         #self.feedsList = self.getCurrentRssFeeds()
         self.feedsList = dict()
         sets = self.feedsTree.getElementsByTagName('set')
+        print "SET = %s " % sets
         for s in sets:
             setName = 'set'+s.attributes["id"].value
+            print "SETNAME = %s " % setName
             self.feedsList[setName] = {'feedslist':list(), 'attrs':dict()}
             #get attrs
             for attrib in s.attributes.keys():
@@ -127,6 +129,7 @@ class RSSWindow(xbmcgui.WindowXML):
                               #Message(s)                       #Get mail
     Dialog.create("Connexion à : ", "LinuxFr")
     NbNews = 0
+    time_debut = time.time()
     print "TIME debut = %f " % time.time() 
     #Sauve les flux RSS
     for setName in self.feedsList:
@@ -177,6 +180,8 @@ class RSSWindow(xbmcgui.WindowXML):
             #listitem.setProperty( "att_file", att_file )
             listitem.setProperty("serveur", self.RssFeeds)
             self.getControl( 1200 ).addItem( listitem )
+            time_int = time.time() - time_debut
+            print "time int = %f " % time_int
 
     #teste si le fichier existe
     if (os.path.isfile('%s/settings.txt' % __profile__)):
@@ -195,7 +200,8 @@ class RSSWindow(xbmcgui.WindowXML):
             settings_file.write('%s\t%s\n' % (repr(feedAddress),repr(feedTitle)))
         settings_file.close()
 #    self.setFocus( self.getControl( 1200 ))
-    print "TIME FIN = %f " % time.time()
+    time_int = time.time() - time_debut
+    print "TIME FIN = %f " % time_int
 #    try:
 #        self.getFocus()
 #    except:)
@@ -247,8 +253,9 @@ class RSSWindow(xbmcgui.WindowXML):
                 if entry.has_key('enclosures'):
                     if entry.enclosures:
                         print "Enclosure = %s " % entry.enclosures[0].href
-                        link_img = entry.enclosures[0].href
-                        img_name = self.download(link_img,'/tmp/img.jpg')
+                        if 'jpg' in entry.enclosures[0].href:
+                            link_img = entry.enclosures[0].href
+                            img_name = self.download(link_img,'/tmp/img.jpg')
                 if entry.has_key('content') and len(entry['content']) >= 1:
                     description = unicode(entry['content'][0].value)
                     type = entry['content'][0].type
