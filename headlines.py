@@ -168,11 +168,13 @@ class RSSWindow(xbmcgui.WindowXML):
                 urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
             #Récupére le titre du FLUX
             print 'file://%s' % self.RssFeeds
+            #Si il existe deja parser on lit le fichier
             if (os.path.isfile('%s-pickle' % self.RssFeeds)):
                 pkl_file = open(('%s-pickle' % self.RssFeeds), 'rb')
                 doc = pickle.load(pkl_file)
                 pkl_file.close()
             else:
+                #Sinon on parse le fichier rss et on le sauve sur le disque
                 doc = feedparser.parse('file://%s' % self.RssFeeds)
                 #Sauve le doc parse directement
                 output = open(('%s-pickle' % self.RssFeeds), 'wb')
@@ -198,8 +200,8 @@ class RSSWindow(xbmcgui.WindowXML):
         lines = FeedName.split('\n')
         for line in lines:
             print "LINE = %s " % line
-            #feedAddress, feedTitle = line.split('\t',1)
-            #print "feedAddressi %s, feedTitle %s" % (feedAddress, feedTitle)
+            feedAddress, feedTitle = line.split('\t',1)
+            print "feedAddress %s, feedTitle %s" % (feedAddress, feedTitle)
     else:
         settings_file = open('%s/settings.txt' % __profile__, 'w')
         for feedAddress,feedTitle in self.RssFeedName:
@@ -372,6 +374,6 @@ class RSSWindow(xbmcgui.WindowXML):
 
 
 
-mydisplay = RSSWindow( "RSSWin.xml" , __cwd__, "Default")
+mydisplay = RSSWindow( "script-headlines-main.xml" , __cwd__, "Default")
 mydisplay .doModal()
 del mydisplay
