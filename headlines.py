@@ -9,6 +9,7 @@ from xml.dom.minidom import parse, Document, _write_data, Node, Element
 import pickle
 import htmlentitydefs
 from html2text import *
+from threading import Thread
 
 # rdf modules
 import feedparser
@@ -68,6 +69,11 @@ QUIT		= 1004
 FILE_ATT	= 1005
 #MAX_SIZE_MSG = int(Addon.getSetting( 'max_msg_size' ))
 #SEARCH_PARAM = Addon.getSetting( 'search_param' )
+class getRSS(Thread):
+  def __init__ (self,ip):
+    Thread.__init__(self)
+    self.ip = ip
+    self.status = -1
 
 class RSSWindow(xbmcgui.WindowXML):
    
