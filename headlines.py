@@ -191,29 +191,8 @@ class RSSWindow(xbmcgui.WindowXML):
             time_int = time.time() - time_debut
             print "time int = %f " % time_int
 
-    #teste si le fichier existe
-    if (os.path.isfile('%s/settings.txt' % __profile__)):
-        settings_file = open('%s/settings.txt' % __profile__, 'r')
-        FeedName = settings_file.read()
-        settings_file.close()
-        print "FEEDNAME = %s " % FeedName
-        lines = FeedName.split('\n')
-        for line in lines:
-            print "LINE = %s " % line
-            #feedAddress, feedTitle = line.split('\t',1)
-            #print "feedAddress %s, feedTitle %s" % (feedAddress, feedTitle)
-    else:
-        settings_file = open('%s/settings.txt' % __profile__, 'w')
-        for feedAddress,feedTitle in self.RssFeedName:
-            settings_file.write('%s\t%s\n' % (repr(feedAddress),repr(feedTitle)))
-        settings_file.close()
-#    self.setFocus( self.getControl( 1200 ))
     time_int = time.time() - time_debut
     print "TIME FIN = %f " % time_int
-#    try:
-#        self.getFocus()
-#    except:)
-#    self.setFocus( self.getControl( 1004 ))
 
   def ParseRSS(self,RssName):
     print "RssName = %s " % RssName
@@ -261,7 +240,7 @@ class RSSWindow(xbmcgui.WindowXML):
                 if entry.has_key('enclosures'):
                     if entry.enclosures:
                         print "Enclosure = %s " % entry.enclosures[0].href
-                        if 'jpg' in entry.enclosures[0].href:
+                        if 'jpg' or 'gif' in entry.enclosures[0].href:
                             link_img = entry.enclosures[0].href
                             img_name = self.download(link_img,'/tmp/img.jpg')
                 if entry.has_key('content') and len(entry['content']) >= 1:
