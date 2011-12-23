@@ -8,6 +8,7 @@ import os, time, stat, re, copy, time
 from xml.dom.minidom import parse, Document, _write_data, Node, Element
 import pickle
 import htmlentitydefs
+import glob
 from html2text import *
 from threading import Thread
 
@@ -78,6 +79,13 @@ class getRSS(Thread):
 class RSSWindow(xbmcgui.WindowXML):
    
   def __init__(self, *args, **kwargs):
+    #On efface toutes les anciennes images des flux
+    Img_path = xbmc.translatePath('special://temp/')
+    folder = Img_path
+
+    files = glob.glob("%s/%s" % (Img_path,'*.tbn'))
+    for f in files:
+            os.remove(f)
     self.position = 0
     self.RssFeedName = []
     if xbmc:
@@ -97,7 +105,7 @@ class RSSWindow(xbmcgui.WindowXML):
     sane = True   #self.checkRssFeedPathSanity()
    
   def onInit( self ):
-    print "Branch  EXPERIMENTAL"
+    print "Branch Master"
     try:
         self.feedsTree = parse(self.RssFeedsPath)
     except:
