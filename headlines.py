@@ -200,8 +200,8 @@ class RSSWindow(xbmcgui.WindowXML):
         lines = FeedName.split('\n')
         for line in lines:
             print "LINE = %s " % line
-            feedAddress, feedTitle = line.split('\t',1)
-            print "feedAddress %s, feedTitle %s" % (feedAddress, feedTitle)
+            #feedAddress, feedTitle = line.split('\t',1)
+            #print "feedAddress %s, feedTitle %s" % (feedAddress, feedTitle)
     else:
         settings_file = open('%s/settings.txt' % __profile__, 'w')
         for feedAddress,feedTitle in self.RssFeedName:
