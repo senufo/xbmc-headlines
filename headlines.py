@@ -201,7 +201,35 @@ class RSSWindow(xbmcgui.WindowXML):
 
     time_int = time.time() - time_debut
     print "TIME FIN = %f " % time_int
+##############################################
+  def htmlentitydecode(self,s):
+    # code from http://snipplr.com/view.php?codeview&id=15261
+    # First convert alpha entities (such as &eacute;)
+    # (Inspired from http://mail.python.org/pipermail/python-list/2007-June/443813.html)
+    def entity2char(m):
+        entity = m.group(1)
+        if entity in htmlentitydefs.name2codepoint:
+            return unichr(htmlentitydefs.name2codepoint[entity])
+        return u" "  # Unknown entity: We replace with a space.
+    
+    t = re.sub(u'&(%s);' % u'|'.join(htmlentitydefs.name2codepoint), entity2char, s)
+  
+    # Then convert numerical entities (such as &#233;)
+    t = re.sub(u'&#(\d+);', lambda x: unichr(int(x.group(1))), t)
+   
+    # Then convert hexa entities (such as &#x00E9;)
+    return re.sub(u'&#x(\w+);', lambda x: unichr(int(x.group(1),16)), t)
 
+  def cleanText(self,txt):
+    p = re.compile(r'\s+')
+    txt = p.sub(' ', txt)
+    
+    txt = self.htmlentitydecode(txt)
+    
+    p = re.compile(r'<[^<]*?/?>')
+    return p.sub('', txt)
+
+##############################################
   def ParseRSS(self,RssName):
     print "RssName = %s " % RssName
     Dialog = xbmcgui.DialogProgress()
@@ -252,7 +280,9 @@ class RSSWindow(xbmcgui.WindowXML):
                             link_img = entry.enclosures[0].href
                             img_name = self.download(link_img,'/tmp/img.jpg')
                 if entry.has_key('content') and len(entry['content']) >= 1:
+                #if entry.has_key('description') and len(entry['description']) >= 1:
                     description = unicode(entry['content'][0].value)
+                    #description = unicode(entry['description'])
                     type = entry['content'][0].type
                     #print "Content = %s " % entry['content'][0].type
                 else:
@@ -278,7 +308,8 @@ class RSSWindow(xbmcgui.WindowXML):
         try:    
             print "Headline = %s " % unicode(titre).encode('utf-8','replace')
             listitem = xbmcgui.ListItem( label=titre) 
-            html = html2text(description)
+            #html = html2text(description)
+            html = self.cleanText(description)
             listitem.setProperty( "message", html )
             listitem.setProperty( "img" , img_name )
             #listitem.setProperty( "att_file", att_file )
