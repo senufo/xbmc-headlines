@@ -309,6 +309,7 @@ class RSSWindow(xbmcgui.WindowXML):
             print "Headline = %s " % unicode(titre).encode('utf-8','replace')
             listitem = xbmcgui.ListItem( label=titre) 
             #html = html2text(description)
+            description = re.sub('(<[bB][rR][ /]>)|(<[/ ]*[pP]>)', '[CR]', description, re.DOTALL)
             html = self.cleanText(description)
             listitem.setProperty( "message", html )
             listitem.setProperty( "img" , img_name )
