@@ -10,7 +10,6 @@ import pickle
 import htmlentitydefs
 import glob
 from html2text import *
-from threading import Thread
 
 # rdf modules
 import feedparser
@@ -70,11 +69,6 @@ QUIT		= 1004
 FILE_ATT	= 1005
 #MAX_SIZE_MSG = int(Addon.getSetting( 'max_msg_size' ))
 #SEARCH_PARAM = Addon.getSetting( 'search_param' )
-class getRSS(Thread):
-  def __init__ (self,ip):
-    Thread.__init__(self)
-    self.ip = ip
-    self.status = -1
 
 class RSSWindow(xbmcgui.WindowXML):
    
@@ -288,7 +282,11 @@ class RSSWindow(xbmcgui.WindowXML):
                 else:
                     description = unicode(entry['summary_detail'].value)
                     type = 'text'
-                headlines.append((title, link, description, type, img_name))
+                if entry.has_key('date'):
+                    date = entry['date']
+                else:
+                    date = 'xx'
+                headlines.append((title, date, description, type, img_name))
                 NbNews += 1
                 img_name = ' '
             except AttributeError, e:
@@ -302,7 +300,7 @@ class RSSWindow(xbmcgui.WindowXML):
                               #Message(s)                       #Get mail
     #progressDialog.create("Connexion à : ", self.RssFeeds)
     up = 1
-    for titre,link,description,type,img_name in headlines:
+    for titre,date,description,type,img_name in headlines:
         #print type(titre)
                    #Get mail                         Please wait
         try:    
@@ -313,6 +311,7 @@ class RSSWindow(xbmcgui.WindowXML):
             html = self.cleanText(description)
             listitem.setProperty( "message", html )
             listitem.setProperty( "img" , img_name )
+            listitem.setProperty( "date" , date )
             #listitem.setProperty( "att_file", att_file )
             self.getControl( 120 ).addItem( listitem )
             print "Up = %d,  NbNews = %d" % (up,NbNews)
