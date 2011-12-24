@@ -9,14 +9,11 @@ from xml.dom.minidom import parse, Document, _write_data, Node, Element
 import pickle
 import htmlentitydefs
 import glob
-from html2text import *
 
 # rdf modules
 import feedparser
 import urllib
 
-# to decode html entities
-from BeautifulSoup import BeautifulStoneSoup
 
 __author__     = "Senufo"
 __scriptid__   = "script.rss_atom"
@@ -34,8 +31,7 @@ __resource__   = xbmc.translatePath( os.path.join( __cwd__, 'resources', 'lib' )
 
 sys.path.append (__resource__)
 
-url = 'http://linuxfr.org/news.atom'
-url = 'http://www.lequipe.fr/Xml/actu_rss.xml'
+#Variable pour stocker les news
 headlines = []
 
 #get actioncodes from keymap.xml/ keys.h
@@ -55,48 +51,32 @@ ACTION_VOLUME_DOWN     =   89
 ACTION_REWIND          =   78
 ACTION_FASTFORWARD     =   77
 
-#ID des boutons dans WinCourrier.xml
+#ID des boutons dans .xml
 STATUS_LABEL   	= 100
-NX_MAIL       	= 101
-MSG_BODY	= 102
+NX_NEWS       	= 101
+DESC_BODY	    = 102
 FEEDS_LIST     	= 120
-SCROLL_BAR	= 121
-MSG_BODY	= 102
-SERVER1		= 1001
-SERVER2		= 1002
-SERVER3		= 1003
-QUIT		= 1004
-FILE_ATT	= 1005
-#MAX_SIZE_MSG = int(Addon.getSetting( 'max_msg_size' ))
-#SEARCH_PARAM = Addon.getSetting( 'search_param' )
+QUIT		    = 1004
 
 class RSSWindow(xbmcgui.WindowXML):
    
   def __init__(self, *args, **kwargs):
     #On efface toutes les anciennes images des flux
     Img_path = xbmc.translatePath('special://temp/')
-    folder = Img_path
-
     files = glob.glob("%s/%s" % (Img_path,'*.tbn'))
     for f in files:
             os.remove(f)
     self.position = 0
+#Recupere le chemoin de RssFeeds.xml
     self.RssFeedName = []
     if xbmc:
-        print "Resource = %s, %s , %s " % (__resource__,__cwd__,__profile__)
         #Crée le répertoire user_data/script.rss_atom si il n'existe pas
-        if (os.path.isdir(__profile__)):
-            #self.RssFeedsPath = xbmc.translatePath('special://userdata/RssFeeds.xml')
-            #self.RssFeedsPath = "%s/%s" % (__profile__,RssFeeds.xml)
-            print "tt"
-        else:
+        if not (os.path.isdir(__profile__)):
             os.mkdir(__profile__)
-            #os.mkdir(path, mode=0777) 
         self.RssFeedsPath = xbmc.translatePath('special://userdata/RssFeeds.xml')
-
     else:
+        #A vérifier sous windows, non testé !!
         self.RssFeedsPath = r'C:\Documents and Settings\Xerox\Application Data\XBMC\userdata\RssFeeds.xml'
-    sane = True   #self.checkRssFeedPathSanity()
    
   def onInit( self ):
     print "Branch Master"
@@ -106,10 +86,9 @@ class RSSWindow(xbmcgui.WindowXML):
         print "Erreur self.feedsTree"
     #Recupere la liste des flux dans RSSFeeds.xml
     if self.feedsTree:
-        #self.feedsList = self.getCurrentRssFeeds()
         self.feedsList = dict()
         sets = self.feedsTree.getElementsByTagName('set')
-        print "SET = %s " % sets
+        #print "SET = %s " % sets
         for s in sets:
             setName = 'set'+s.attributes["id"].value
             print "SETNAME = %s " % setName
@@ -121,21 +100,21 @@ class RSSWindow(xbmcgui.WindowXML):
             feeds = s.getElementsByTagName('feed')
             for feed in feeds:
                 self.feedsList[setName]['feedslist'].append({'url':feed.firstChild.toxml(), 'updateinterval':feed.attributes['updateinterval'].value})
-        for setName in self.feedsList:
-            val = setName[0]
-            print "%s = %s " % (setName,val)
-            print "url = %s " % self.feedsList[setName]
+        #for setName in self.feedsList:
+        #    val = setName[0]
+        #    print "%s = %s " % (setName,val)
+        #    print "url = %s " % self.feedsList[setName]
             #for set in feedsList[setName]:
             #    print "SET = %s" % set
-            for feed in self.feedsList[setName]['feedslist']:
-                    print "url = %s " % feed['url']
-        print "URL = %s " % self.feedsList['set1']
+        #    for feed in self.feedsList[setName]['feedslist']:
+        #            print "url = %s " % feed['url']
+        #print "URL = %s " % self.feedsList['set1']
 
 
 
     Dialog = xbmcgui.DialogProgress()
                               #Message(s)                       #Get mail
-    Dialog.create("Connexion à : ", "LinuxFr")
+    Dialog.create("Connexion  ", " ")
     NbNews = 0
     time_debut = time.time()
     print "TIME debut = %f " % time.time() 
@@ -144,27 +123,26 @@ class RSSWindow(xbmcgui.WindowXML):
         i = 0
         for feed in self.feedsList[setName]['feedslist']:
             i += 1
-            print "=>url = %s " % feed['url']
-            Dialog.update(0, 'Connexion a %s' % feed['url'], 'Please wait...')
+            #print "=>url = %s " % feed['url']
+            Dialog.update(0, 'Connexion : %s' % feed['url'], 'Please wait...')
             updateinterval = int(feed['updateinterval']) * 60
-            #http://www.lequipe.fr/Xml/actu_rss.xml
             filename = feed['url']
             filename = re.sub('^http://.*/','Rss-',filename)
-            #self.RssFeeds = xbmc.translatePath('special://userdata/%s' % filename)
             self.RssFeeds = '%s/%s' % (__profile__,filename)
             #teste si le fichier existe
             if (os.path.isfile(self.RssFeeds)):
-                #Si le flux date de plus que le updateinterval on le download de nx
+                #Si le flux est plus ancine que le updateinterval on le telecharge de nouveau
                 date_modif = os.stat(self.RssFeeds).st_mtime
                 diff = time.time() - date_modif
-                print "diff = %f, date_modif = %f, updateinterval %d" % (diff,date_modif,updateinterval )
+                #print "diff = %f, date_modif = %f, updateinterval %d" % (diff,date_modif,updateinterval )
 
-                #Si le flux date de plus que le updateinterval on le download de nx
+                #Si le flux est plus ancien que le updateinterval on le telecharge de nouveau
                 if (diff > updateinterval):
-                    print "=>filename = %s, self.RssFeeds = %s, url = %s " % (filename,self.RssFeeds, feed['url'])
+                    #print "=>filename = %s, self.RssFeeds = %s, url = %s " % (filename,self.RssFeeds, feed['url'])
                     urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
+                    #On efface le fichier parser²
                     os.remove('%s-pickle' % self.RssFeeds)
-                    print "date = %f, epoc time = %f  " % (date_modif, time.time())
+                    #print "date = %f, epoc time = %f  " % (date_modif, time.time())
             else:
                 #Le fichier n'existe pas on le download
                 urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
@@ -185,17 +163,23 @@ class RSSWindow(xbmcgui.WindowXML):
                 output.close()
             #print "doc Titre = %s " % doc.feed.title
             #self.getControl( 1000 + i ).setLabel( doc.feed.title )
+            #On rempli la liste des serveurs + le titre du flux
             self.RssFeedName.append((self.RssFeeds,doc.feed.title))
             listitem = xbmcgui.ListItem( label=doc.feed.title) 
             #listitem.setProperty( "att_file", att_file )
             listitem.setProperty("serveur", self.RssFeeds)
+            #On rempli le control list du skin²
             self.getControl( 1200 ).addItem( listitem )
             time_int = time.time() - time_debut
             print "time int = %f " % time_int
 
     time_int = time.time() - time_debut
     print "TIME FIN = %f " % time_int
-##############################################
+    print "rssfeed = %s " % self.RssFeeds
+    #On affiche les dernier flux
+    self.ParseRSS(self.RssFeeds)
+
+  #Nettoie le code HTML d'après rssclient de xbmc
   def htmlentitydecode(self,s):
     # code from http://snipplr.com/view.php?codeview&id=15261
     # First convert alpha entities (such as &eacute;)
@@ -222,107 +206,98 @@ class RSSWindow(xbmcgui.WindowXML):
     
     p = re.compile(r'<[^<]*?/?>')
     return p.sub('', txt)
-
-##############################################
+  
   def ParseRSS(self,RssName):
+    """
+    Parse RSS or ATOM file with feedparser
+    """
     print "RssName = %s " % RssName
     Dialog = xbmcgui.DialogProgress()
-    Dialog.create("Connexion à : ", RssName)
-    Dialog.update(0, 'Get News', 'Please wait... ParseRSS')
+    Dialog.create("Get News")
+    Dialog.update(0, 'Please wait... ')
 
     self.getControl( FEEDS_LIST ).reset()
     #Recupere l'adresse du flux dans self.RssFeedName
-    print "==>self.RssFeeds = %s" % (RssName)
-    #for feedAddress,feedTitle in self.RssFeedName:
-    #    print 'feedAddress = %s ,feedTitle = %s' % \
-    #    (repr(feedAddress),repr(feedTitle))
-    #    if RssName == feedTitle:
-    #        print "==> Clique sur %s " % repr(feedAddress)
-    #        print "==> self.RssFeeds %s " % self.RssFeeds
-    #        self.RssFeeds = feedAddress
-    #        print "==> self.RssFeeds2 %s " % self.RssFeeds
+    #print "==>self.RssFeeds = %s" % (RssName)
+    #Le nom du fichier sur lequel on a cliquer 
+    #est dans RssName
     self.RssFeeds = RssName
     NbNews = 0
     # parse the document
-    #doc = feedparser.parse(url)
+    #Si c'est deja fait on lit le fichier 
     if (os.path.isfile('%s-pickle' % self.RssFeeds)):
         pkl_file = open(('%s-pickle' % self.RssFeeds), 'rb')
         doc = pickle.load(pkl_file)
         pkl_file.close()
     else:
+        #Sinon on le parse
         doc = feedparser.parse('file://%s' % self.RssFeeds)
-    #Récupère le tire du flux
-    #print "doc Titre = %s " % doc.feed.title
-    #Dialog = xbmcgui.DialogProgress()
-    #Dialog.create("Connexion à : ", self.RssFeeds)
+    #Récupère le titre du flux
     img_name = ' '
     #Vide les headlines lors d'un nouveau appel
     headlines = []
+    #On recupere les tags suivants :
+    #title, entry.content, enclosure pour les images
+    #et date
     if doc.status < 400:
         for entry in doc['entries']:
             try:
-                #unicode(s , enc).encode('utf8','replace')
-                #print type(entry.title)
                 title = unicode(entry.title)
-                link  = unicode(entry.link)
-                #title = (entry.title)
-                #link  = (entry.link)
+                #link  = unicode(entry.link)
+                #Recupere un media associe
                 if entry.has_key('enclosures'):
                     if entry.enclosures:
                         print "Enclosure = %s " % entry.enclosures[0].href
+                        #actuellement que les images
                         if 'jpg' or 'gif' in entry.enclosures[0].href:
                             link_img = entry.enclosures[0].href
                             img_name = self.download(link_img,'/tmp/img.jpg')
+                #C'est ici que le recupere la news²
                 if entry.has_key('content') and len(entry['content']) >= 1:
-                #if entry.has_key('description') and len(entry['description']) >= 1:
                     description = unicode(entry['content'][0].value)
-                    #description = unicode(entry['description'])
+                    #type contient le type de texte : html, plain text, etc...
                     type = entry['content'][0].type
-                    #print "Content = %s " % entry['content'][0].type
                 else:
+                    #Si pas de content on essaye le summary_detail
                     description = unicode(entry['summary_detail'].value)
                     type = 'text'
+                #Recuperation de la date de la news
                 if entry.has_key('date'):
                     date = entry['date']
                 else:
-                    date = 'xx'
+                    date = 'unknown'
+                #On rempli les news
                 headlines.append((title, date, description, type, img_name))
                 NbNews += 1
+                #On vide le nom de l'image pour le prochain tour
                 img_name = ' '
             except AttributeError, e:
                 print "AttributeError : %s" % str(e)
                 pass
     else:
         print ('Error %s, getting %r' % (doc.status, url))
-    self.getControl( NX_MAIL ).setLabel( '%d news' % NbNews ) 
-    #Dialog.close()
-    #progressDialog = xbmcgui.DialogProgress()
-                              #Message(s)                       #Get mail
-    #progressDialog.create("Connexion à : ", self.RssFeeds)
+    #On affiche le nb de news dans le skin²
+    self.getControl( NX_NEWS ).setLabel( '%d news' % NbNews )
+    #Variable pour la progression dans la boite de dialogue²
     up = 1
+    #On rempli le skin²
     for titre,date,description,type,img_name in headlines:
-        #print type(titre)
-                   #Get mail                         Please wait
         try:    
             print "Headline = %s " % unicode(titre).encode('utf-8','replace')
             listitem = xbmcgui.ListItem( label=titre) 
             #html = html2text(description)
+            #On nettoie le texte html pour l'affichage
             description = re.sub('(<[bB][rR][ /]>)|(<[/ ]*[pP]>)', '[CR]', description, re.DOTALL)
             html = self.cleanText(description)
-            listitem.setProperty( "message", html )
+            listitem.setProperty( "description", html )
             listitem.setProperty( "img" , img_name )
             listitem.setProperty( "date" , date )
-            #listitem.setProperty( "att_file", att_file )
-            self.getControl( 120 ).addItem( listitem )
-            print "Up = %d,  NbNews = %d" % (up,NbNews)
+            self.getControl( FEEDS_LIST ).addItem( listitem )
+            #print "Up = %d,  NbNews = %d" % (up,NbNews)
             up2 = int((up*100)/NbNews)
-            print "UP = %d " % up
+            #print "UP = %d " % up
             up += 1
             Dialog.update(up2, 'Get News', 'Please wait...')
-
-
-
-            #print "Description = %s " % unicode(html).encode('utf-8','replace')
         except Exception ,e:
             print "Erreur : %s " % str(e)
     Dialog.close()       
@@ -365,27 +340,23 @@ class RSSWindow(xbmcgui.WindowXML):
         if action == ACTION_FASTFORWARD: #PageUp
             if (self.position > 0):
                 self.position = self.position - 1
-            self.getControl( MSG_BODY ).scroll(self.position)
+            self.getControl( DESC_BODY ).scroll(self.position)
             print "Position F = %d " % self.position
         if (action == ACTION_REWIND): #PageUp
             #if (self.position <= self.nb_lignes):
             if (self.position <= 100):
                 self.position = self.position + 1
-            self.getControl( MSG_BODY ).scroll(self.position)
+            self.getControl( DESC_BODY ).scroll(self.position)
             print "Position R = %d " % self.position
 																       
   def onClick( self, controlId ):
         print "onClick controId = %d " % controlId
         if (controlId == 1200):
-            label = self.getControl( controlId ).getSelectedItem().getLabel()
+            #label = self.getControl( controlId ).getSelectedItem().getLabel()
             label = self.getControl( controlId
                                    ).getSelectedItem().getProperty('serveur')
-            print "LABEL LIST = %s" % (repr(label))
+            #print "LABEL LIST = %s" % (repr(label))
             self.ParseRSS(label)
-        #if (controlId in [SERVER1,SERVER2,SERVER3]):
-        #    label = self.getControl( controlId ).getLabel()
-        #    print "LABEL BUTTON = %s " % repr(label)
-        #    self.ParseRSS(label)
         elif (controlId == QUIT):
             self.close()
 

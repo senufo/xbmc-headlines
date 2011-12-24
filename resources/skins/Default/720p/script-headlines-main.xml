@@ -20,16 +20,6 @@
         <texture border="40">default-panel.png</texture>
 	<aspectratio scalediffuse="false" align="center" aligny="top">stretch</aspectratio>
       </control>
-      <!-- ** Required ** Do not change <id> or <type> -->
-                      <!--        <control type="image" >
-            <description>page header tab icon</description>
-            <posx>20</posx>
-            <posy>20</posy>
-            <width>100</width>
-            <height>100</height>
-            <texture>icon.png</texture>
-        </control> -->
-
       <control type="label" id="101">
         <description>textarea : Nx News</description>
         <posx>1260</posx>
@@ -44,7 +34,7 @@
       </control>
      
       <control type="label">
-        <description>textarea : Partie Update de Listitem (120) EMAIL_LIST, en bas</description>
+        <description>textarea : Partie Update de Listitem (120), en bas</description>
         <posx>30</posx>
         <posy>620</posy>
         <width>1050</width>
@@ -98,7 +88,7 @@
       </control>      
          <!-- Bouton quitter -->
        <control type="button" id="1004">
-          <description>Server button control</description>
+          <description>button control quit</description>
           <posx>25</posx>
           <posy>625</posy>
           <width>135</width>
@@ -107,8 +97,6 @@
           <aligny>center</aligny>
           <visible>true</visible>
           <colordiffuse>FFFFFFFF</colordiffuse>
-          <!-- <texturefocus>default-list-focus.png</texturefocus>
-          <texturenofocus>default-list-nofocus.png</texturenofocus> -->
           <label>Quitter</label>
           <font>font14</font>
           <textcolor>FFFFFFFF</textcolor>
@@ -121,10 +109,8 @@
 
       <control type="image" id="1005">
             <description>image du flux rss</description>
-            <posx>20</posx>
+            <posx>30</posx>
             <posy>400</posy>
-            <!-- <width>100</width>
-            <height>100</height> -->
             <texture>$INFO[Container(120).ListItem.Property(img)]</texture>
         </control>
  
@@ -143,13 +129,13 @@
         <posx>300</posx>
         <posy>150</posy>
         <width>900</width>
-        <height>340</height>
+        <height>440</height>
         <font>font18</font>
         <textcolor>white</textcolor>
 	<!-- <aligny>center</aligny> -->
         <align>left</align>
 	<autoscroll time="3000" delay="4000" repeat="5000">True</autoscroll>
-        <label>$INFO[Container(120).ListItem.Property(message)]</label>
+        <label>$INFO[Container(120).ListItem.Property(description)]</label>
       </control>
       
 
