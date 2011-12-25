@@ -16,8 +16,8 @@ import urllib
 
 
 __author__     = "Senufo"
-__scriptid__   = "script.rss_atom"
-__scriptname__ = "rss_atom"
+__scriptid__   = "script.headlines"
+__scriptname__ = "headlines"
 
 __addon__      = xbmcaddon.Addon(id=__scriptid__)
 
