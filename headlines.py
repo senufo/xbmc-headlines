@@ -248,8 +248,9 @@ class RSSWindow(xbmcgui.WindowXML):
                 if entry.has_key('enclosures'):
                     if entry.enclosures:
                         print "Enclosure = %s " % entry.enclosures[0].href
+                        print "Enclosure = %s " % entry.enclosures[0].type
                         #actuellement que les images
-                        if 'jpg' or 'gif' in entry.enclosures[0].href:
+                        if 'image' in entry.enclosures[0].type:
                             link_img = entry.enclosures[0].href
                             img_name = self.download(link_img,'/tmp/img.jpg')
                 #C'est ici que le recupere la news²
@@ -276,6 +277,12 @@ class RSSWindow(xbmcgui.WindowXML):
                 pass
     else:
         print ('Error %s, getting %r' % (doc.status, url))
+    #On sauve le headlines dans un fichier
+    output = open(('%s-headlines' % self.RssFeeds), 'wb')
+    # Pickle dictionary using protocol 0.
+    pickle.dump(headlines, output)
+    output.close()
+
     #On affiche le nb de news dans le skin²
     self.getControl( NX_NEWS ).setLabel( '%d news' % NbNews )
     #Variable pour la progression dans la boite de dialogue²

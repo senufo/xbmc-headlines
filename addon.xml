@@ -13,10 +13,15 @@
     <summary lang="fr">Voir les flux RSS/ATOMr</summary> 
     <description lang="en">View feed RSS/ATOM</description>
     <description lang="fr">
-            Voir les flux RSS et ATOM, basé sur :
-                 multirss (https://github.com/cf2009/multirss)
-                 rssclient : https://github.com/pieh/pieh-xbmc-addons
-                 headlines.py : www.freevo.org
+Voir les flux RSS et ATOM, basé sur :
+* multirss (https://github.com/cf2009/multirss)
+* rssclient : https://github.com/pieh/pieh-xbmc-addons
+* headlines.py : www.freevo.org
+
+Pour accélérer la lecture vous pouvez utiliser le service headlines.daemon qui
+télécharge les flux en arrièrs plan
+
+Pour le moment ne récupère que les images en plus du texte. Il ne supporte pas encore les vidéos
     </description>
     <platform>all</platform>
   </extension>
