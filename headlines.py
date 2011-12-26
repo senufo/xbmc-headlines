@@ -148,8 +148,11 @@ class RSSWindow(xbmcgui.WindowXML):
     time_int = time.time() - time_debut
     print "TIME FIN = %f " % time_int
     print "rssfeed = %s " % self.RssFeeds
-    #On affiche les dernier flux
-    self.ParseRSS(self.RssFeeds)
+    self.getControl( 1200 ).selectItem( 1 )
+    label = self.getControl( 1200 
+                                   ).getSelectedItem().getProperty('serveur')
+ #On affiche le dernier flux
+    self.ParseRSS(label)
 
   #Nettoie le code HTML d'après rssclient de xbmc
   def htmlentitydecode(self,s):
@@ -265,9 +268,24 @@ class RSSWindow(xbmcgui.WindowXML):
         if action == ACTION_PREVIOUS_MENU:
             self.close()
         if action == ACTION_MOVE_UP:
+            print "ACTION_MOVE_UP"
             controlId = action.getId()
-        if action == ACTION_MOVE_DOWN:
             controlId = action.getButtonCode()
+            print "controlId = %d " % controlId
+            if (controlId == 1200):
+                label = self.getControl( controlId
+                                   ).getSelectedItem().getProperty('serveur')
+                self.ParseRSS(label)
+
+        if action == ACTION_MOVE_DOWN:
+            print "ACTION_MOVE_DOWN"
+            controlId = action.getButtonCode()
+            print "controlId = %d " % controlId
+            if (controlId == 1200):
+                label = self.getControl( controlId
+                                   ).getSelectedItem().getProperty('serveur')
+                self.ParseRSS(label)
+
         if action == ACTION_FASTFORWARD: #PageUp
             if (self.position > 0):
                 self.position = self.position - 1

@@ -1,5 +1,5 @@
 <window>
-  <defaultcontrol>1004</defaultcontrol>
+  <defaultcontrol>1200</defaultcontrol>
   <coordinates>
     <system>1</system>
     <posx>0</posx>
@@ -294,7 +294,7 @@
             <visible>Control.HasFocus(1200)</visible>
           </control>
           
-          <control type="label">
+          <control type="label" id="1201">
             <posx>10</posx>
             <posy>0</posy>
             <width>400</width>
