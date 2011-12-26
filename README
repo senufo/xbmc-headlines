@@ -1,0 +1,11 @@
+See RSS and ATOM based on:
+* Multirss (https://github.com/cf2009/multirss)
+* Rssclient: https://github.com/pieh/pieh-xbmc-addons
+* Headlines.py: www.freevo.org
+
+Use feedparser library to parse RSS and ATOM stream (http://code.google.com/p/feedparser/)
+
+To retrieve the RSS or ATOM Fluxx must use the service that headlines.daemon
+downloads the stream in the background
+
+Currently recovers only the images in addition to text. It does not yet support videos

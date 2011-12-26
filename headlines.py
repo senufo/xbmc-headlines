@@ -62,12 +62,12 @@ class RSSWindow(xbmcgui.WindowXML):
    
   def __init__(self, *args, **kwargs):
     #On efface toutes les anciennes images des flux
-    Img_path = xbmc.translatePath('special://temp/')
-    files = glob.glob("%s/%s" % (Img_path,'*.tbn'))
-    for f in files:
-            os.remove(f)
-    self.position = 0
-#Recupere le chemoin de RssFeeds.xml
+    #Img_path = xbmc.translatePath('special://temp/')
+    #files = glob.glob("%s/%s" % (Img_path,'*.tbn'))
+    #for f in files:
+    #        os.remove(f)
+    #self.position = 0
+#Recupere le chemin de RssFeeds.xml
     self.RssFeedName = []
     if xbmc:
         #Crée le répertoire user_data/script.rss_atom si il n'existe pas
