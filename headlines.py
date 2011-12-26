@@ -130,22 +130,22 @@ class RSSWindow(xbmcgui.WindowXML):
             filename = re.sub('^http://.*/','Rss-',filename)
             self.RssFeeds = '%s/%s' % (__profile__,filename)
             #teste si le fichier existe
-            if (os.path.isfile(self.RssFeeds)):
-                #Si le flux est plus ancine que le updateinterval on le telecharge de nouveau
-                date_modif = os.stat(self.RssFeeds).st_mtime
-                diff = time.time() - date_modif
+            #if (os.path.isfile(self.RssFeeds)):
+                #Si le flux est plus ancien que le updateinterval on le telecharge de nouveau
+            #    date_modif = os.stat(self.RssFeeds).st_mtime
+            #    diff = time.time() - date_modif
                 #print "diff = %f, date_modif = %f, updateinterval %d" % (diff,date_modif,updateinterval )
 
                 #Si le flux est plus ancien que le updateinterval on le telecharge de nouveau
-                if (diff > updateinterval):
-                    #print "=>filename = %s, self.RssFeeds = %s, url = %s " % (filename,self.RssFeeds, feed['url'])
-                    urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
+            #    if (diff > updateinterval):
+            #        #print "=>filename = %s, self.RssFeeds = %s, url = %s " % (filename,self.RssFeeds, feed['url'])
+            #        urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
                     #On efface le fichier parser²
-                    os.remove('%s-pickle' % self.RssFeeds)
-                    #print "date = %f, epoc time = %f  " % (date_modif, time.time())
-            else:
+            #        os.remove('%s-pickle' % self.RssFeeds)
+            #        #print "date = %f, epoc time = %f  " % (date_modif, time.time())
+            #else:
                 #Le fichier n'existe pas on le download
-                urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
+            #    urllib.urlretrieve(feed['url'], filename = self.RssFeeds)
             #Récupére le titre du FLUX
             print 'file://%s' % self.RssFeeds
             #Si il existe deja parser on lit le fichier
@@ -236,52 +236,59 @@ class RSSWindow(xbmcgui.WindowXML):
     img_name = ' '
     #Vide les headlines lors d'un nouveau appel
     headlines = []
+    #On lit les news dans le fichier Rss-xxxx-headlines
+    if (os.path.isfile('%s-headlines' % self.RssFeeds)):
+        pkl_file = open(('%s-headlines' % self.RssFeeds), 'rb')
+        headlines = pickle.load(pkl_file)
+        pkl_file.close()
+    else:
+        print "Erreur ouverture HEADLINES"
     #On recupere les tags suivants :
     #title, entry.content, enclosure pour les images
     #et date
-    if doc.status < 400:
-        for entry in doc['entries']:
-            try:
-                title = unicode(entry.title)
-                #link  = unicode(entry.link)
-                #Recupere un media associe
-                if entry.has_key('enclosures'):
-                    if entry.enclosures:
-                        print "Enclosure = %s " % entry.enclosures[0].href
-                        print "Enclosure = %s " % entry.enclosures[0].type
-                        #actuellement que les images
-                        if 'image' in entry.enclosures[0].type:
-                            link_img = entry.enclosures[0].href
-                            img_name = self.download(link_img,'/tmp/img.jpg')
-                #C'est ici que le recupere la news²
-                if entry.has_key('content') and len(entry['content']) >= 1:
-                    description = unicode(entry['content'][0].value)
-                    #type contient le type de texte : html, plain text, etc...
-                    type = entry['content'][0].type
-                else:
-                    #Si pas de content on essaye le summary_detail
-                    description = unicode(entry['summary_detail'].value)
-                    type = 'text'
-                #Recuperation de la date de la news
-                if entry.has_key('date'):
-                    date = entry['date']
-                else:
-                    date = 'unknown'
-                #On rempli les news
-                headlines.append((title, date, description, type, img_name))
-                NbNews += 1
-                #On vide le nom de l'image pour le prochain tour
-                img_name = ' '
-            except AttributeError, e:
-                print "AttributeError : %s" % str(e)
-                pass
-    else:
-        print ('Error %s, getting %r' % (doc.status, url))
+    #if doc.status < 400:
+    #    for entry in doc['entries']:
+    #        try:
+    #            title = unicode(entry.title)
+    #            #link  = unicode(entry.link)
+    #            #Recupere un media associe
+    #            if entry.has_key('enclosures'):
+    #                if entry.enclosures:
+    #                    print "Enclosure = %s " % entry.enclosures[0].href
+    #                    print "Enclosure = %s " % entry.enclosures[0].type
+    #                    #actuellement que les images
+    #                    if 'image' in entry.enclosures[0].type:
+    #                        link_img = entry.enclosures[0].href
+    #                        img_name = self.download(link_img,'/tmp/img.jpg')
+    #            #C'est ici que le recupere la news²
+    #            if entry.has_key('content') and len(entry['content']) >= 1:
+    #                description = unicode(entry['content'][0].value)
+    #                #type contient le type de texte : html, plain text, etc...
+    #                type = entry['content'][0].type
+    #            else:
+    #                #Si pas de content on essaye le summary_detail
+    #                description = unicode(entry['summary_detail'].value)
+    #                type = 'text'
+    #            #Recuperation de la date de la news
+    #            if entry.has_key('date'):
+    #                date = entry['date']
+    #            else:
+    #                date = 'unknown'
+    #            #On rempli les news
+    #            headlines.append((title, date, description, type, img_name))
+    #            NbNews += 1
+    #            #On vide le nom de l'image pour le prochain tour
+    #            img_name = ' '
+    #        except AttributeError, e:
+    #            print "AttributeError : %s" % str(e)
+    #            pass
+    #else:
+    #    print ('Error %s, getting %r' % (doc.status, url))
     #On sauve le headlines dans un fichier
-    output = open(('%s-headlines' % self.RssFeeds), 'wb')
+    #output = open(('%s-headlines' % self.RssFeeds), 'wb')
     # Pickle dictionary using protocol 0.
-    pickle.dump(headlines, output)
-    output.close()
+    #pickle.dump(headlines, output)
+    #output.close()
 
     #On affiche le nb de news dans le skin²
     self.getControl( NX_NEWS ).setLabel( '%d news' % NbNews )
