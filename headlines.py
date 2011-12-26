@@ -194,7 +194,6 @@ class RSSWindow(xbmcgui.WindowXML):
     #Le nom du fichier sur lequel on a cliquer 
     #est dans RssName
     self.RssFeeds = RssName
-    NbNews = 0
     #Récupère le titre du flux
     img_name = ' '
     #Vide les headlines lors d'un nouveau appel
@@ -206,6 +205,8 @@ class RSSWindow(xbmcgui.WindowXML):
         pkl_file.close()
     else:
         print "Erreur ouverture HEADLINES"
+    #On stocke le nb de news
+    NbNews = len(headlines)
     #On affiche le nb de news dans le skin²
     self.getControl( NX_NEWS ).setLabel( '%d news' % NbNews )
     #Variable pour la progression dans la boite de dialogue²
@@ -273,7 +274,6 @@ class RSSWindow(xbmcgui.WindowXML):
             self.getControl( DESC_BODY ).scroll(self.position)
             print "Position F = %d " % self.position
         if (action == ACTION_REWIND): #PageUp
-            #if (self.position <= self.nb_lignes):
             if (self.position <= 100):
                 self.position = self.position + 1
             self.getControl( DESC_BODY ).scroll(self.position)
@@ -282,16 +282,11 @@ class RSSWindow(xbmcgui.WindowXML):
   def onClick( self, controlId ):
         print "onClick controId = %d " % controlId
         if (controlId == 1200):
-            #label = self.getControl( controlId ).getSelectedItem().getLabel()
             label = self.getControl( controlId
                                    ).getSelectedItem().getProperty('serveur')
-            #print "LABEL LIST = %s" % (repr(label))
             self.ParseRSS(label)
         elif (controlId == QUIT):
             self.close()
-
-
-
 
 mydisplay = RSSWindow( "script-headlines-main.xml" , __cwd__, "Default")
 mydisplay .doModal()
