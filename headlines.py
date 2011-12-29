@@ -102,13 +102,13 @@ class RSSWindow(xbmcgui.WindowXML):
                 self.feedsList[setName]['feedslist'].append({'url':feed.firstChild.toxml(), 'updateinterval':feed.attributes['updateinterval'].value})
 
     Dialog = xbmcgui.DialogProgress()
-                              #Message(s)                       #Get mail
     Dialog.create("Connexion  ", " ")
     NbNews = 0
     time_debut = time.time()
     print "TIME debut = %f " % time.time() 
     #Sauve les flux RSS
     for setName in self.feedsList:
+        Erreur_RSS = False
         i = 0
         for feed in self.feedsList[setName]['feedslist']:
             i += 1
@@ -129,21 +129,30 @@ class RSSWindow(xbmcgui.WindowXML):
             else:
                 #Sinon on parse le fichier rss et on le sauve sur le disque
                 doc = feedparser.parse('file://%s' % self.RssFeeds)
-                #Sauve le doc parse directement
-                output = open(('%s-pickle' % self.RssFeeds), 'wb')
-                # Pickle dictionary using protocol 0.
-                pickle.dump(doc, output)
-                output.close()
+                if doc.version != '':
+                    #Sauve le doc parse directement
+                    output = open(('%s-pickle' % self.RssFeeds), 'wb')
+                    # Pickle dictionary using protocol 0.
+                    pickle.dump(doc, output)
+                    output.close()
+                else:
+                    print "Erreur RSS HEADLINES: %s " % self.RssFeeds
+                    locstr = "Erreur : %s " % self.RssFeeds
+                    xbmc.executebuiltin("XBMC.Notification(%s : ,%s,30)" %
+                                                (locstr, 'Flux RSS non reconnu'))
+                    Erreur_RSS = True 
             #print "doc Titre = %s " % doc.feed.title
             #self.getControl( 1000 + i ).setLabel( doc.feed.title )
             #On rempli la liste des serveurs + le titre du flux
-            self.RssFeedName.append((self.RssFeeds,doc.feed.title))
-            listitem = xbmcgui.ListItem( label=doc.feed.title) 
-            listitem.setProperty("serveur", self.RssFeeds)
-            #On rempli le control list du skin²
-            self.getControl( 1200 ).addItem( listitem )
-            time_int = time.time() - time_debut
-            print "time int = %f " % time_int
+            #Si le flux est valide
+            if Erreur_RSS == False:
+                self.RssFeedName.append((self.RssFeeds,doc.feed.title))
+                listitem = xbmcgui.ListItem( label=doc.feed.title) 
+                listitem.setProperty("serveur", self.RssFeeds)
+                #On rempli le control list du skin²
+                self.getControl( 1200 ).addItem( listitem )
+                time_int = time.time() - time_debut
+                print "time int = %f " % time_int
 
     time_int = time.time() - time_debut
     print "TIME FIN = %f " % time_int
