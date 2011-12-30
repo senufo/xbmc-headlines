@@ -4,16 +4,10 @@ import xbmc, xbmcgui
 import xbmcaddon
 
 #python modules
-import os, time, stat, re, copy, time
-from xml.dom.minidom import parse, Document, _write_data, Node, Element
+import os, re
 import pickle
 import htmlentitydefs
 import glob
-
-# rdf modules
-import feedparser
-import urllib
-
 
 __author__     = "Senufo"
 __scriptid__   = "script.headlines"
@@ -26,9 +20,8 @@ __version__    = __addon__.getAddonInfo('version')
 __language__   = __addon__.getLocalizedString
 
 __profile__    = xbmc.translatePath( __addon__.getAddonInfo('profile') )
-__resource__   = xbmc.translatePath( os.path.join( __cwd__, 'resources', 'lib' ) )
-
-
+__resource__   = xbmc.translatePath( os.path.join( __cwd__, 'resources',
+                                                  'lib' ) )
 sys.path.append (__resource__)
 
 #Variable pour stocker les news
@@ -62,8 +55,8 @@ class RSSWindow(xbmcgui.WindowXML):
    
   def __init__(self, *args, **kwargs):
     print "__INIT__"
-    self.CurFeeds = True
-    self.RssFeedName = []
+    self.curFeeds = True
+    self.rssFeedName = []
   
   def onInit( self ):
     print "Branch Master"
@@ -81,14 +74,14 @@ class RSSWindow(xbmcgui.WindowXML):
         #On rempli le control list du skin
         #print "Serveur = %s " % f
         #Test si c'est le retour d'un play video
-        if self.CurFeeds: self.getControl( 1200 ).addItem( listitem )
+        if self.curFeeds: self.getControl( 1200 ).addItem( listitem )
     #On selectionne pour l'affichage le premier flux
     self.getControl( 1200 ).selectItem( 1 )
     label = self.getControl( 1200 ).getSelectedItem().getProperty('serveur')
     #On affiche le premier flux
     #Test si c'est le retour d'un play video
-    if self.CurFeeds: self.ParseRSS(label)
-    self.CurFeeds = None
+    if self.curFeeds: self.ParseRSS(label)
+    self.curFeeds = None
 
   #Nettoie le code HTML d'après rssclient de xbmc
   def htmlentitydecode(self,s):
@@ -101,7 +94,8 @@ class RSSWindow(xbmcgui.WindowXML):
             return unichr(htmlentitydefs.name2codepoint[entity])
         return u" "  # Unknown entity: We replace with a space.
     
-    t = re.sub(u'&(%s);' % u'|'.join(htmlentitydefs.name2codepoint), entity2char, s)
+    t = re.sub(u'&(%s);' % u'|'.join(htmlentitydefs.name2codepoint),
+               entity2char, s)
   
     # Then convert numerical entities (such as &#233;)
     t = re.sub(u'&#(\d+);', lambda x: unichr(int(x.group(1))), t)
@@ -130,7 +124,7 @@ class RSSWindow(xbmcgui.WindowXML):
     Dialog.update(0, locstr)
 
     self.getControl( FEEDS_LIST ).reset()
-    #Recupere l'adresse du flux dans self.RssFeedName
+    #Recupere l'adresse du flux dans self.rssFeedName
     #print "==>self.RssFeeds = %s" % (RssName)
     #Le nom du fichier sur lequel on a cliquer 
     #est dans RssName avec pickle ajoute à la fin
@@ -150,17 +144,18 @@ class RSSWindow(xbmcgui.WindowXML):
     NbNews = len(headlines)
     #On affiche le nb de news dans le skin²
     locstr = __addon__.getLocalizedString(id=602) #news
-    self.getControl( NX_NEWS ).setLabel( '%d %s' % (NbNews,locstr) )
+    self.getControl( NX_NEWS ).setLabel( '%d %s' % (NbNews, locstr) )
     #Variable pour la progression dans la boite de dialogue²
     up = 1
     #On rempli le skin²
-    for titre,date,description,type,img_name,link_video in headlines:
+    for titre, date, description, type, img_name, link_video in headlines:
         try:    
             #print "Headline = %s " % unicode(titre).encode('utf-8','replace')
             listitem = xbmcgui.ListItem( label=titre) 
             #html = html2text(description)
             #On nettoie le texte html pour l'affichage
-            description = re.sub('(<[bB][rR][ /]>)|(<[/ ]*[pP]>)', '[CR]', description, re.DOTALL)
+            description = re.sub('(<[bB][rR][ /]>)|(<[/ ]*[pP]>)', '[CR]',
+                                 description, re.DOTALL)
             html = self.cleanText(description)
             listitem.setProperty( "description", html )
             listitem.setProperty( "img" , img_name )
@@ -229,15 +224,11 @@ class RSSWindow(xbmcgui.WindowXML):
                                    ).getSelectedItem().getProperty('serveur')
             self.ParseRSS(label)
         elif (controlId == VIDEO):
-            label1 = self.getControl( controlId ).getLabel()
-            win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-            #label = win.getProperty('video')
             label = self.getControl( FEEDS_LIST
                                    ).getSelectedItem().getProperty('video')
 
             #print "Label video = %s, Property = %s " % (label,label1)
             xbmc.executebuiltin("XBMC.PlayMedia(%s)" % ( label ) )
-            #print "Fin video"
         elif (controlId == QUIT):
             self.close()
 
