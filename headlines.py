@@ -61,106 +61,27 @@ QUIT		    = 1004
 class RSSWindow(xbmcgui.WindowXML):
    
   def __init__(self, *args, **kwargs):
-    #On efface toutes les anciennes images des flux
-    #Img_path = xbmc.translatePath('special://temp/')
-    #files = glob.glob("%s/%s" % (Img_path,'*.tbn'))
-    #for f in files:
-    #        os.remove(f)
-    #self.position = 0
-#Recupere le chemin de RssFeeds.xml
-    self.RssFeedName = []
-    if xbmc:
-        #Crée le répertoire user_data/script.rss_atom si il n'existe pas
-        if not (os.path.isdir(__profile__)):
-            os.mkdir(__profile__)
-        self.RssFeedsPath = xbmc.translatePath('special://userdata/RssFeeds.xml')
-    else:
-        #A vérifier sous windows, non testé !!
-        self.RssFeedsPath = r'C:\Documents and Settings\Xerox\Application Data\XBMC\userdata\RssFeeds.xml'
-   
+   self.RssFeedName = []
+  
   def onInit( self ):
     print "Branch Master"
-    try:
-        self.feedsTree = parse(self.RssFeedsPath)
-    except:
-        print "Erreur self.feedsTree"
-    #Recupere la liste des flux dans RSSFeeds.xml
-    if self.feedsTree:
-        self.feedsList = dict()
-        sets = self.feedsTree.getElementsByTagName('set')
-        #print "SET = %s " % sets
-        for s in sets:
-            setName = 'set'+s.attributes["id"].value
-            print "SETNAME = %s " % setName
-            self.feedsList[setName] = {'feedslist':list(), 'attrs':dict()}
-            #get attrs
-            for attrib in s.attributes.keys():
-                self.feedsList[setName]['attrs'][attrib] = s.attributes[attrib].value
-            #get feedslist
-            feeds = s.getElementsByTagName('feed')
-            for feed in feeds:
-                self.feedsList[setName]['feedslist'].append({'url':feed.firstChild.toxml(), 'updateinterval':feed.attributes['updateinterval'].value})
-
-    Dialog = xbmcgui.DialogProgress()
-    Dialog.create("Connexion  ", " ")
-    NbNews = 0
-    time_debut = time.time()
-    print "TIME debut = %f " % time.time() 
-    #Sauve les flux RSS
-    for setName in self.feedsList:
-        Erreur_RSS = False
-        i = 0
-        for feed in self.feedsList[setName]['feedslist']:
-            i += 1
-            #print "=>url = %s " % feed['url']
-            Dialog.update(0, 'Connexion : %s' % feed['url'], 'Please wait...')
-            updateinterval = int(feed['updateinterval']) * 60
-            filename = feed['url']
-            filename = re.sub('^http://.*/','Rss-',filename)
-            self.RssFeeds = '%s/%s' % (__profile__,filename)
-            #teste si le fichier existe
-            #Récupére le titre du FLUX
-            print 'file://%s' % self.RssFeeds
-            #Si il existe deja parser on lit le fichier
-            if (os.path.isfile('%s-pickle' % self.RssFeeds)):
-                pkl_file = open(('%s-pickle' % self.RssFeeds), 'rb')
-                doc = pickle.load(pkl_file)
-                pkl_file.close()
-            else:
-                #Sinon on parse le fichier rss et on le sauve sur le disque
-                doc = feedparser.parse('file://%s' % self.RssFeeds)
-                if doc.version != '':
-                    #Sauve le doc parse directement
-                    output = open(('%s-pickle' % self.RssFeeds), 'wb')
-                    # Pickle dictionary using protocol 0.
-                    pickle.dump(doc, output)
-                    output.close()
-                else:
-                    print "Erreur RSS HEADLINES: %s " % self.RssFeeds
-                    locstr = "Erreur : %s " % self.RssFeeds
-                    xbmc.executebuiltin("XBMC.Notification(%s : ,%s,30)" %
-                                                (locstr, 'Flux RSS non reconnu'))
-                    Erreur_RSS = True 
-            #print "doc Titre = %s " % doc.feed.title
-            #self.getControl( 1000 + i ).setLabel( doc.feed.title )
-            #On rempli la liste des serveurs + le titre du flux
-            #Si le flux est valide
-            if Erreur_RSS == False:
-                self.RssFeedName.append((self.RssFeeds,doc.feed.title))
-                listitem = xbmcgui.ListItem( label=doc.feed.title) 
-                listitem.setProperty("serveur", self.RssFeeds)
-                #On rempli le control list du skin²
-                self.getControl( 1200 ).addItem( listitem )
-                time_int = time.time() - time_debut
-                print "time int = %f " % time_int
-
-    time_int = time.time() - time_debut
-    print "TIME FIN = %f " % time_int
-    print "rssfeed = %s " % self.RssFeeds
+    #On lit le repertoire ou les flux ont ete sauve
+    #et on recupere les titres des ces flux
+    #Pour les mettre dans les boutons
+    rss_path = __profile__
+    files = glob.glob("%s/%s" % (rss_path,'*-pickle'))
+    for f in files:
+        pkl_file = open(f, 'rb')
+        doc = pickle.load(pkl_file)
+        pkl_file.close()
+        listitem = xbmcgui.ListItem( label=doc.feed.title) 
+        listitem.setProperty("serveur", f)
+        #On rempli le control list du skin
+        self.getControl( 1200 ).addItem( listitem )
+    #On selectionne pour l'affichage le premier flux
     self.getControl( 1200 ).selectItem( 1 )
-    label = self.getControl( 1200 
-                                   ).getSelectedItem().getProperty('serveur')
- #On affiche le dernier flux
+    label = self.getControl( 1200 ).getSelectedItem().getProperty('serveur')
+    #On affiche le premier flux
     self.ParseRSS(label)
 
   #Nettoie le code HTML d'après rssclient de xbmc
@@ -204,8 +125,8 @@ class RSSWindow(xbmcgui.WindowXML):
     #Recupere l'adresse du flux dans self.RssFeedName
     #print "==>self.RssFeeds = %s" % (RssName)
     #Le nom du fichier sur lequel on a cliquer 
-    #est dans RssName
-    self.RssFeeds = RssName
+    #est dans RssName avec pickle ajoute à la fin
+    self.RssFeeds = RssName.replace("-pickle",'')
     #Récupère le titre du flux
     img_name = ' '
     #Vide les headlines lors d'un nouveau appel
