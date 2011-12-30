@@ -61,7 +61,9 @@ VIDEO           = 1006
 class RSSWindow(xbmcgui.WindowXML):
    
   def __init__(self, *args, **kwargs):
-   self.RssFeedName = []
+    print "__INIT__"
+    self.CurFeeds = True
+    self.RssFeedName = []
   
   def onInit( self ):
     print "Branch Master"
@@ -77,13 +79,16 @@ class RSSWindow(xbmcgui.WindowXML):
         listitem = xbmcgui.ListItem( label=doc.feed.title) 
         listitem.setProperty("serveur", f)
         #On rempli le control list du skin
-        print "Serveur = %s " % f
-        self.getControl( 1200 ).addItem( listitem )
+        #print "Serveur = %s " % f
+        #Test si c'est le retour d'un play video
+        if self.CurFeeds: self.getControl( 1200 ).addItem( listitem )
     #On selectionne pour l'affichage le premier flux
     self.getControl( 1200 ).selectItem( 1 )
     label = self.getControl( 1200 ).getSelectedItem().getProperty('serveur')
     #On affiche le premier flux
-    self.ParseRSS(label)
+    #Test si c'est le retour d'un play video
+    if self.CurFeeds: self.ParseRSS(label)
+    self.CurFeeds = None
 
   #Nettoie le code HTML d'après rssclient de xbmc
   def htmlentitydecode(self,s):
@@ -117,7 +122,7 @@ class RSSWindow(xbmcgui.WindowXML):
     """
     Parse RSS or ATOM file with feedparser
     """
-    print "RssName = %s " % RssName
+    #print "RssName = %s " % RssName
     Dialog = xbmcgui.DialogProgress()
     locstr = __addon__.getLocalizedString(id=600) #Get News
     Dialog.create(locstr)
@@ -151,7 +156,7 @@ class RSSWindow(xbmcgui.WindowXML):
     #On rempli le skin²
     for titre,date,description,type,img_name,link_video in headlines:
         try:    
-            print "Headline = %s " % unicode(titre).encode('utf-8','replace')
+            #print "Headline = %s " % unicode(titre).encode('utf-8','replace')
             listitem = xbmcgui.ListItem( label=titre) 
             #html = html2text(description)
             #On nettoie le texte html pour l'affichage
@@ -187,19 +192,19 @@ class RSSWindow(xbmcgui.WindowXML):
         if action == ACTION_PREVIOUS_MENU:
             self.close()
         if action == ACTION_MOVE_UP:
-            print "ACTION_MOVE_UP"
+            #print "ACTION_MOVE_UP"
             controlId = action.getId()
             controlId = action.getButtonCode()
-            print "controlId = %d " % controlId
+            #print "controlId = %d " % controlId
             if (controlId == 1200):
                 label = self.getControl( controlId
                                    ).getSelectedItem().getProperty('serveur')
                 self.ParseRSS(label)
 
         if action == ACTION_MOVE_DOWN:
-            print "ACTION_MOVE_DOWN"
+            #print "ACTION_MOVE_DOWN"
             controlId = action.getButtonCode()
-            print "controlId = %d " % controlId
+            #print "controlId = %d " % controlId
             
             if (controlId == 1200):
                 label = self.getControl( controlId
@@ -210,15 +215,15 @@ class RSSWindow(xbmcgui.WindowXML):
             if (self.position > 0):
                 self.position = self.position - 1
             self.getControl( DESC_BODY ).scroll(self.position)
-            print "Position F = %d " % self.position
+            #print "Position F = %d " % self.position
         if (action == ACTION_REWIND): #PageUp
             if (self.position <= 100):
                 self.position = self.position + 1
             self.getControl( DESC_BODY ).scroll(self.position)
-            print "Position R = %d " % self.position
+            #print "Position R = %d " % self.position
 																       
   def onClick( self, controlId ):
-        print "onClick controId = %d " % controlId
+        #print "onClick controId = %d " % controlId
         if (controlId == 1200):
             label = self.getControl( controlId
                                    ).getSelectedItem().getProperty('serveur')
@@ -230,9 +235,9 @@ class RSSWindow(xbmcgui.WindowXML):
             label = self.getControl( FEEDS_LIST
                                    ).getSelectedItem().getProperty('video')
 
-            print "Label video = %s, Property = %s " % (label,label1)
+            #print "Label video = %s, Property = %s " % (label,label1)
             xbmc.executebuiltin("XBMC.PlayMedia(%s)" % ( label ) )
-
+            #print "Fin video"
         elif (controlId == QUIT):
             self.close()
 
