@@ -22,7 +22,7 @@
       </control>
       <control type="label" id="101">
         <description>textarea : Nx News</description>
-        <posx>1260</posx>
+        <posx>100</posx>
         <posy>620</posy>
         <width>200</width>
         <height>40</height>
@@ -86,10 +86,30 @@
         <height>2</height>
         <texture>GMseparator.png</texture>
       </control>      
-         <!-- Bouton quitter -->
+       <!-- Bouton Play Video -->
+       <control type="button" id="1006">
+          <description>button control Play Video</description>
+          <posx>900</posx>
+          <posy>625</posy>
+          <width>135</width>
+          <height>35</height>
+          <align>center</align>
+          <aligny>center</aligny>
+          <visible>true</visible>
+          <colordiffuse>FFFFFFFF</colordiffuse>
+          <label>Play Video</label>
+          <font>font14</font>
+          <textcolor>FFFFFFFF</textcolor>
+          <disabledcolor>80FFFFFF</disabledcolor>
+          <onup>1200</onup>
+          <ondown>1200</ondown>
+          <onleft>120</onleft>
+          <onright>1004</onright>
+       </control>
+<!-- Bouton quitter -->
        <control type="button" id="1004">
           <description>button control quit</description>
-          <posx>25</posx>
+          <posx>1100</posx>
           <posy>625</posy>
           <width>135</width>
           <height>35</height>
@@ -103,7 +123,7 @@
           <disabledcolor>80FFFFFF</disabledcolor>
           <onup>1200</onup>
           <ondown>1200</ondown>
-          <onleft>120</onleft>
+          <onleft>1006</onleft>
           <onright>120</onright>
        </control>
 
