@@ -97,7 +97,8 @@
           <aligny>center</aligny>
           <visible>true</visible>
           <colordiffuse>FFFFFFFF</colordiffuse>
-          <label>Play Video</label>
+          <label>$INFO[Container(120).ListItem.Property(video)]</label>
+          <!-- <label>Play Video</label> -->
           <font>font14</font>
           <textcolor>FFFFFFFF</textcolor>
           <disabledcolor>80FFFFFF</disabledcolor>

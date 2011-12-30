@@ -57,7 +57,7 @@ NX_NEWS       	= 101
 DESC_BODY	    = 102
 FEEDS_LIST     	= 120
 QUIT		    = 1004
-
+VIDEO           = 1006
 class RSSWindow(xbmcgui.WindowXML):
    
   def __init__(self, *args, **kwargs):
@@ -156,6 +156,7 @@ class RSSWindow(xbmcgui.WindowXML):
             listitem.setProperty( "description", html )
             listitem.setProperty( "img" , img_name )
             listitem.setProperty( "date" , date )
+            listitem.setProperty( "video" , link_video )
             self.getControl( FEEDS_LIST ).addItem( listitem )
             #print "Up = %d,  NbNews = %d" % (up,NbNews)
             up2 = int((up*100)/NbNews)
@@ -233,6 +234,11 @@ class RSSWindow(xbmcgui.WindowXML):
             label = self.getControl( controlId
                                    ).getSelectedItem().getProperty('serveur')
             self.ParseRSS(label)
+        elif (controlId == VIDEO):
+            label = self.getControl( controlId ).getLabel()
+            print "Label video = %s " % label
+            xbmc.executebuiltin("XBMC.PlayMedia(%s)" % ( label ) )
+
         elif (controlId == QUIT):
             self.close()
 
