@@ -235,8 +235,13 @@ class RSSWindow(xbmcgui.WindowXML):
                                    ).getSelectedItem().getProperty('serveur')
             self.ParseRSS(label)
         elif (controlId == VIDEO):
-            label = self.getControl( controlId ).getLabel()
-            print "Label video = %s " % label
+            label1 = self.getControl( controlId ).getLabel()
+            win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+            #label = win.getProperty('video')
+            label = self.getControl( FEEDS_LIST
+                                   ).getSelectedItem().getProperty('video')
+
+            print "Label video = %s, Property = %s " % (label,label1)
             xbmc.executebuiltin("XBMC.PlayMedia(%s)" % ( label ) )
 
         elif (controlId == QUIT):
