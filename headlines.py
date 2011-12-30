@@ -118,8 +118,10 @@ class RSSWindow(xbmcgui.WindowXML):
     """
     print "RssName = %s " % RssName
     Dialog = xbmcgui.DialogProgress()
-    Dialog.create("Get News")
-    Dialog.update(0, 'Please wait... ')
+    locstr = __addon__.getLocalizedString(id=600) #Get News
+    Dialog.create(locstr)
+    locstr = __addon__.getLocalizedString(id=601) #Please wait
+    Dialog.update(0, locstr)
 
     self.getControl( FEEDS_LIST ).reset()
     #Recupere l'adresse du flux dans self.RssFeedName
@@ -141,7 +143,8 @@ class RSSWindow(xbmcgui.WindowXML):
     #On stocke le nb de news
     NbNews = len(headlines)
     #On affiche le nb de news dans le skin²
-    self.getControl( NX_NEWS ).setLabel( '%d news' % NbNews )
+    locstr = __addon__.getLocalizedString(id=602) #news
+    self.getControl( NX_NEWS ).setLabel( '%d %s' % (NbNews,locstr) )
     #Variable pour la progression dans la boite de dialogue²
     up = 1
     #On rempli le skin²
@@ -162,7 +165,8 @@ class RSSWindow(xbmcgui.WindowXML):
             up2 = int((up*100)/NbNews)
             #print "UP = %d " % up
             up += 1
-            Dialog.update(up2, 'Get News', 'Please wait...')
+                               #'Get News'                       Please wait... 
+            Dialog.update(up2, __addon__.getLocalizedString(id=602), __addon__.getLocalizedString(id=602))
         except Exception ,e:
             print "Erreur : %s " % str(e)
     Dialog.close()       

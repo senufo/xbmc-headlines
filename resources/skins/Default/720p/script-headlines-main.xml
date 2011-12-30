@@ -99,6 +99,7 @@
           <colordiffuse>FFFFFFFF</colordiffuse>
           <!-- <label>$INFO[Container(120).ListItem.Property(video)]</label> -->
           <!-- <visible>Substring(Window.property(headlines.video),'False')</visible> -->
+          <!-- <label>$LOCALIZE[33603]</label> -->
           <label>Play Video</label>
           <font>font14</font>
           <textcolor>FFFFFFFF</textcolor>
@@ -119,7 +120,8 @@
           <aligny>center</aligny>
           <visible>true</visible>
           <colordiffuse>FFFFFFFF</colordiffuse>
-          <label>Quitter</label>
+          <!-- <label>$LOCALIZE[33604]</label> -->
+          <label>Quit</label>
           <font>font14</font>
           <textcolor>FFFFFFFF</textcolor>
           <disabledcolor>80FFFFFF</disabledcolor>

@@ -1,9 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-    <string id="32101">Latest Headlines From :</string>
-    <string id="32102">Category</string>
-    <string id="32103">FEEDS</string>
-  
-    <string id="32900">Version: 1.6cf</string>
-    <string id="32901">last update: 30/07/09</string>
+    <string id="600">Get News</string>
+    <string id="601">Please wait...</string>
+    <string id="602">news</string>
+    <string id="33603">Play Video</string>
+    <string id="33604">Quit</string>
 </strings>
