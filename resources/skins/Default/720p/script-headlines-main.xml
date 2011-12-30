@@ -22,7 +22,7 @@
       </control>
       <control type="label" id="101">
         <description>textarea : Nx News</description>
-        <posx>100</posx>
+        <posx>120</posx>
         <posy>620</posy>
         <width>200</width>
         <height>40</height>
@@ -97,8 +97,9 @@
           <aligny>center</aligny>
           <visible>true</visible>
           <colordiffuse>FFFFFFFF</colordiffuse>
-          <label>$INFO[Container(120).ListItem.Property(video)]</label>
-          <!-- <label>Play Video</label> -->
+          <!-- <label>$INFO[Container(120).ListItem.Property(video)]</label> -->
+          <!-- <visible>Substring(Window.property(headlines.video),'False')</visible> -->
+          <label>Play Video</label>
           <font>font14</font>
           <textcolor>FFFFFFFF</textcolor>
           <disabledcolor>80FFFFFF</disabledcolor>

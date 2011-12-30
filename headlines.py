@@ -196,6 +196,15 @@ class RSSWindow(xbmcgui.WindowXML):
   def onAction(self, action):
         #print "ID Action %d" % action.getId()
         #print "Code Action %d" % action.getButtonCode()
+        Visible = self.getControl( FEEDS_LIST
+                                ).getSelectedItem().getProperty('video')
+        print "VISIBLE = %s " % Visible
+        if 'False' in Visible:
+            self.getControl( VIDEO ).setVisible( False )
+        else:
+            self.getControl( VIDEO ).setVisible( True )
+
+
         if action == ACTION_PREVIOUS_MENU:
             self.close()
         if action == ACTION_MOVE_UP:
@@ -212,6 +221,7 @@ class RSSWindow(xbmcgui.WindowXML):
             print "ACTION_MOVE_DOWN"
             controlId = action.getButtonCode()
             print "controlId = %d " % controlId
+            
             if (controlId == 1200):
                 label = self.getControl( controlId
                                    ).getSelectedItem().getProperty('serveur')
