@@ -77,6 +77,7 @@ class RSSWindow(xbmcgui.WindowXML):
         listitem = xbmcgui.ListItem( label=doc.feed.title) 
         listitem.setProperty("serveur", f)
         #On rempli le control list du skin
+        print "Serveur = %s " % f
         self.getControl( 1200 ).addItem( listitem )
     #On selectionne pour l'affichage le premier flux
     self.getControl( 1200 ).selectItem( 1 )
@@ -171,38 +172,12 @@ class RSSWindow(xbmcgui.WindowXML):
             print "Erreur : %s " % str(e)
     Dialog.close()       
 
-  def getCacheThumbName(url, multiimagepath):
-    thumb = xbmc.getCacheThumbName(url)
-   
-    if 'jpg' in url:
-        thumb = thumb.replace('.tbn', '.jpg')
-    elif 'png' in url:
-        thumb = thumb.replace('.tbn', '.png')
-    elif 'gif' in url:
-        thumb = thumb.replace('.tbn', '.gif')
-   
-    tpath = os.path.join(multiimagepath, thumb)
-    return tpath
-     
-  def checkDir(path):
-    if not os.path.exists(path):
-        os.mkdir(path)
- 
-  def download(self,src,dst):
-    tmpname = xbmc.translatePath('special://temp/%s' % xbmc.getCacheThumbName(src))
-    print "tmpname = %s " % tmpname 
-    if os.path.exists(tmpname):
-        os.remove(tmpname)
-    urllib.urlretrieve(src, filename = tmpname)
-    #os.rename(tmpname, dst)
-    return tmpname
-
   def onAction(self, action):
         #print "ID Action %d" % action.getId()
         #print "Code Action %d" % action.getButtonCode()
         Visible = self.getControl( FEEDS_LIST
                                 ).getSelectedItem().getProperty('video')
-        print "VISIBLE = %s " % Visible
+        #print "VISIBLE = %s " % Visible
         if 'False' in Visible:
             self.getControl( VIDEO ).setVisible( False )
         else:
