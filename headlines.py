@@ -24,6 +24,7 @@ __resource__   = xbmc.translatePath( os.path.join( __cwd__, 'resources',
                                                   'lib' ) )
 sys.path.append (__resource__)
 
+DEBUG = True
 #Variable pour stocker les news
 headlines = []
 
@@ -54,12 +55,12 @@ VIDEO           = 1006
 class RSSWindow(xbmcgui.WindowXML):
    
   def __init__(self, *args, **kwargs):
-    print "__INIT__"
+    if DEBUG == True print "__INIT__"
     self.curFeeds = True
     self.rssFeedName = []
   
   def onInit( self ):
-    print "Branch Master"
+    if DEBUG == True print "Branch Master"
     #On lit le repertoire ou les flux ont ete sauve
     #et on recupere les titres des ces flux
     #Pour les mettre dans les boutons
@@ -172,9 +173,11 @@ class RSSWindow(xbmcgui.WindowXML):
             listitem = xbmcgui.ListItem( label=titre) 
             #html = html2text(description)
             #On nettoie le texte html pour l'affichage
+            if DEBUG == True print "DESCRIPTION = %s " % repr(description)
             description = re.sub('(<[bB][rR][ /]>)|(<[/ ]*[pP]>)', '[CR]',
                                  description, re.DOTALL)
             html = self.cleanText(description)
+            if DEBUG == True print "DESCRIPTION apres cleantext = %s " % repr(description)
             listitem.setProperty( "description", html )
             listitem.setProperty( "img" , img_name )
             listitem.setProperty( "date" , date )
