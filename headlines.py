@@ -24,7 +24,7 @@ __resource__   = xbmc.translatePath( os.path.join( __cwd__, 'resources',
                                                   'lib' ) )
 sys.path.append (__resource__)
 
-DEBUG = True
+DEBUG = False
 #Variable pour stocker les news
 headlines = []
 
