@@ -10,7 +10,7 @@
              library="headlines.py" />
   <extension point="xbmc.addon.metadata">
     <summary lang="en">View feed RSS/ATOM</summary>
-    <summary lang="fr">Voir les flux RSS/ATOMr</summary> 
+    <summary lang="fr">Voir les flux RSS/ATOM</summary> 
     <description lang="en">View feed RSS/ATOM</description>
     <description lang="fr">
 Voir les flux RSS et ATOM, basé sur :
@@ -18,11 +18,15 @@ Voir les flux RSS et ATOM, basé sur :
 * rssclient : https://github.com/pieh/pieh-xbmc-addons
 * headlines.py : www.freevo.org
 
-Pour récupérer les fluxx RSS ou ATOM il faut utiliser le service headlines.daemon qui
+Pour récupérer les flux RSS ou ATOM il faut utiliser le service headlines.daemon qui
 télécharge les flux en arrièrs plan
 
-Rrécupère que les images en plus du texte. 
+Récupère les images en plus du texte. 
 Le support vidéo est focntionnel, pour les liens Youtube il faut le addons vidéo Youtube
+
+Pour le premier lancement je vous conseille d'attendre 15 à 20 minutes en fonction du nombre de
+flux que vous avez avant d'essayer de les lire avec ce script. C'est le temps qu'il faut pour headlines_daemon
+pour télécharger l'ensmeble des flux. C'est d'autant plus long s'il y a beaucoup de commentaires
     </description>
     <platform>all</platform>
   </extension>
