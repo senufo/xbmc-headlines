@@ -82,6 +82,24 @@ class RSSWindow(xbmcgui.WindowXML):
     #Test si c'est le retour d'un play video
     if self.curFeeds: self.ParseRSS(label)
     self.curFeeds = None
+  
+  def ReadYT( self, string):
+    """
+    Read link for youtube video
+    """
+    if 'youtube.com/v' in string:
+        vid_ids = re.findall('http://www.youtube.com/v/(.{11})\??', string, re.DOTALL )
+        for id in vid_ids:
+            link_yt = 'plugin://plugin.video.youtube/?action=play_video&videoid=%s' % id
+            return link_yt
+            
+    if 'youtube.com/watch' in string:
+        vid_ids = re.findall('youtube.com/watch\?v=(.{11})\??', string, re.DOTALL )
+            
+        for id in vid_ids:
+            link_yt.video = 'plugin://plugin.video.youtube/?action=play_video&videoid=%s' % id
+            return link_yt
+    return False
 
   #Nettoie le code HTML d'après rssclient de xbmc
   def htmlentitydecode(self,s):
@@ -228,7 +246,11 @@ class RSSWindow(xbmcgui.WindowXML):
                                    ).getSelectedItem().getProperty('video')
 
             #print "Label video = %s, Property = %s " % (label,label1)
-            xbmc.executebuiltin("XBMC.PlayMedia(%s)" % ( label ) )
+            link_yt = self.ReadYT(label)
+            if link_yt == False:
+                xbmc.executebuiltin("XBMC.PlayMedia(%s)" % ( label ) )
+            else:
+                xbmc.executebuiltin("XBMC.PlayMedia(%s)" % ( link_yt ) )
         elif (controlId == QUIT):
             self.close()
 
