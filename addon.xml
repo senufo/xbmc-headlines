@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.headlines"
        name="headlines"
-       version="0.0.4"
+       version="0.0.5"
        provider-name="Senufo">
   <requires>
     <import addon="xbmc.python" version="2.0"/>
@@ -21,7 +21,8 @@ Voir les flux RSS et ATOM, basé sur :
 Pour récupérer les fluxx RSS ou ATOM il faut utiliser le service headlines.daemon qui
 télécharge les flux en arrièrs plan
 
-Pour le moment ne récupère que les images en plus du texte. Il ne supporte pas encore les vidéos
+Rrécupère que les images en plus du texte. 
+Le support vidéo est focntionnel, pour les liens Youtube il faut le addons vidéo Youtube
     </description>
     <platform>all</platform>
   </extension>
