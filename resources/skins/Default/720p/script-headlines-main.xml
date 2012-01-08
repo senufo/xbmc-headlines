@@ -134,6 +134,7 @@
             <posx>30</posx>
             <posy>400</posy>
             <aspectratio scalediffuse="false" align="left" aligny="top">keep</aspectratio>
+            <width>300</width>
             <texture>$INFO[Container(120).ListItem.Property(img)]</texture>
         </control>
  
