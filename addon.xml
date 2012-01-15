@@ -5,7 +5,7 @@
        provider-name="Senufo">
   <requires>
     <import addon="xbmc.python" version="2.0"/>
-    <import addon="xbmc.headlines_daemon" version="0.0.7"/>
+    <import addon="service.headlines_daemon" version="0.0.7"/>
   </requires>
   <extension point="xbmc.python.script"
              library="headlines.py" />
