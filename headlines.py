@@ -167,7 +167,7 @@ class RSSWindow(xbmcgui.WindowXML):
     #Variable pour la progression dans la boite de dialogue²
     up = 1
     #On rempli le skin²
-    for titre, date, description, type, img_name, link_video in headlines:
+    for titre, date, description, type, img_name, link_video, NoNews in headlines:
         try:    
             #print "Headline = %s " % unicode(titre).encode('utf-8','replace')
             listitem = xbmcgui.ListItem( label=titre) 
