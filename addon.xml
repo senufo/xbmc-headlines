@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.headlines"
        name="headlines"
-       version="0.0.8"
+       version="0.0.9"
        provider-name="Senufo">
   <requires>
     <import addon="xbmc.python" version="2.0"/>
-    <import addon="service.headlines_daemon" version="0.0.8"/>
+    <import addon="service.headlines_daemon" version="0.0.9"/>
   </requires>
   <extension point="xbmc.python.script"
              library="headlines.py" />
@@ -22,12 +22,12 @@ Voir les flux RSS et ATOM, basé sur :
 Pour récupérer les flux RSS ou ATOM il faut utiliser le service headlines.daemon qui
 télécharge les flux en arrièrs plan
 
-Récupère les images en plus du texte. 
-Le support vidéo est focntionnel, pour les liens Youtube il faut le addons vidéo Youtube
+Récupére les images en plus du texte. 
+Le support vidéo est fonctionnel, pour les liens Youtube il faut le addon vidéo Youtube
 
 Pour le premier lancement je vous conseille d'attendre 15 à 20 minutes en fonction du nombre de
 flux que vous avez avant d'essayer de les lire avec ce script. C'est le temps qu'il faut pour headlines_daemon
-pour télécharger l'ensmeble des flux. C'est d'autant plus long s'il y a beaucoup de commentaires
+pour télécharger l'ensemble des flux. C'est d'autant plus long s'il y a beaucoup de commentaires
     </description>
     <platform>all</platform>
   </extension>
