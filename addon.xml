@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.headlines"
        name="headlines"
-       version="0.0.9"
+       version="0.0.9.1"
        provider-name="Senufo">
   <requires>
     <import addon="xbmc.python" version="2.0"/>
@@ -18,6 +18,9 @@ Voir les flux RSS et ATOM, basé sur :
 * multirss (https://github.com/cf2009/multirss)
 * rssclient : https://github.com/pieh/pieh-xbmc-addons
 * headlines.py : www.freevo.org
+
+Les flux sont définis dans le ficheir RssFeed.xml que vous pouvez éditer en utilisant
+le plugin RssEditor ou directment à la main.
 
 Pour récupérer les flux RSS ou ATOM il faut utiliser le service headlines.daemon qui
 télécharge les flux en arrièrs plan
